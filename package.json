@@ -1,0 +1,14 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "A simple TODO Web Application",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "TODO"
+  ],
+  "author": "Annapurna, Arif",
+  "license": "ISC"
+}
