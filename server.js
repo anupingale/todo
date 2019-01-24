@@ -1,9 +1,5 @@
 const http = require('http');
-
-const app = function (request, response) {
-  response.write('Request received');
-  response.end();
-}
+const app = require('./src/app.js');
 
 const server = http.createServer(app);
 const PORT = process.env.PORT || 8080;
