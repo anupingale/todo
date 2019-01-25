@@ -8,6 +8,7 @@ const HOME_PAGE = '/index.html';
 const USER_DETAIL_FILE = './data/userDetail.json';
 const KEY_SEPERATOR = '&';
 const KEY_VALUE_SEPERATOR = '=';
+const COOKIES_SEPERATOR = ';';
 
 module.exports = {
   ENCODING,
@@ -19,5 +20,6 @@ module.exports = {
   HOME_PAGE,
   USER_DETAIL_FILE,
   KEY_SEPERATOR,
-  KEY_VALUE_SEPERATOR
+  KEY_VALUE_SEPERATOR,
+  COOKIES_SEPERATOR
 };

@@ -6,7 +6,9 @@ const {
   STATUS_OK,
   STATUS_NOT_FOUND,
   HOME_PAGE,
-  ROOT_DIR
+  ROOT_DIR, 
+  COOKIES_SEPERATOR,
+  KEY_VALUE_SEPERATOR
 } = require('./constant.js');
 
 const readData = function (request, response, next) {
@@ -50,4 +52,17 @@ const serveURLData = function (filePath, response) {
   });
 };
 
-module.exports = { readData, requestHandler };
+const readCookies = function(request, response, next) {
+  const cookie = request.headers.cookie;
+  const cookies = {};
+  if (cookie) {
+    cookie.split(COOKIES_SEPERATOR).forEach(element => {
+      const [name, value] = element.split(KEY_VALUE_SEPERATOR);
+      cookies[name.trim()] = value.trim();
+    });
+  }
+  request.cookies = cookies;
+  next();
+};
+
+module.exports = { readData, requestHandler, readCookies };
