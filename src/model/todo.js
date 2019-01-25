@@ -1,10 +1,10 @@
 const { isListEmpty } = require('../util.js');
 
 class Todo {
-  constructor(title, description) {
+  constructor(title, description, tasks = {}) {
     this.title = title;
     this.description = description;
-    this.tasks = {};
+    this.tasks = tasks;
   }
 
   getNewTaskId() {

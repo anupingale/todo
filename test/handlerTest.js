@@ -30,7 +30,7 @@ describe('signupHandler', () => {
       add: () =>{ },
       get: () => []
     }
-    let req = { body: "userName=abc&password=xyx&displayName=a1" };
+    let req = { body: "username=abc&password=xyx&displayName=a1" };
     let res = {
       statusCode: undefined,
       end: () => { },

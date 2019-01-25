@@ -44,8 +44,8 @@ describe('isValidUser', () => {
 
 describe('loginHandler', () => {
   it('should return valid status code and redirction url', () => {
-    let users = { get: () => [{ userName: "abc", password: "abc" }] };
-    let req = { body: "userName=abc&password=abc" };
+    let users = { get: () => [{ username: "abc", password: "abc" }] };
+    let req = { body: "username=abc&password=abc" };
     let res = {
       setHeader: () => { },
       writeHead: (statusCode, redirectURL) => {

@@ -9,7 +9,7 @@ class TodoList {
   }
 
   addTodo(todo) {
-    const todoID = this.getNewTodoId();
+    const todoID = this.getNewTodoId(); 
     this[todoID] = todo;
   }
 

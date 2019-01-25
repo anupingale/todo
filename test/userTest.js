@@ -8,7 +8,7 @@ describe('Adding user to Users Class', () => {
     users.set([user]);
     let userDetails = users.get()[0];
     expect(userDetails).has.property('displayName').to.equal('ABC');
-    expect(userDetails).has.property('userName').to.equal('a1');
+    expect(userDetails).has.property('username').to.equal('a1');
     expect(userDetails).has.property('password').to.equal('xyz');
   });
 
@@ -18,7 +18,7 @@ describe('Adding user to Users Class', () => {
     users.add(user);
     let userDetails = users.get()[0];
     expect(userDetails).has.property('displayName').to.equal('ABC');
-    expect(userDetails).has.property('userName').to.equal('a1');
+    expect(userDetails).has.property('username').to.equal('a1');
     expect(userDetails).has.property('password').to.equal('xyz');
   });
 });

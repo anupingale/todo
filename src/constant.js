@@ -6,6 +6,7 @@ const STATUS_REDIRECTION_FOUND = 302;
 const ROOT_DIR = './public';
 const HOME_PAGE = '/index.html';
 const USER_DETAIL_FILE = './data/userDetail.json';
+const USER_TODO = './data/todoList.json';
 const KEY_SEPERATOR = '&';
 const KEY_VALUE_SEPERATOR = '=';
 const COOKIES_SEPERATOR = ';';
@@ -19,6 +20,7 @@ module.exports = {
   ROOT_DIR,
   HOME_PAGE,
   USER_DETAIL_FILE,
+  USER_TODO,
   KEY_SEPERATOR,
   KEY_VALUE_SEPERATOR,
   COOKIES_SEPERATOR

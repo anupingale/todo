@@ -1,8 +1,12 @@
 class User {
-  constructor(displayName, userName, password) {
+  constructor(displayName, username, password) {
     this.displayName = displayName;
-    this.userName = userName;
+    this.username = username;
     this.password = password;
+  }
+
+  addTodoLists(todoList){
+    this.todoList = todoList;
   }
 }
 
