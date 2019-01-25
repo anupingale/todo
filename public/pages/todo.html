@@ -13,11 +13,18 @@
 <body>
   hello
   <div id="content"></div>
+
+  <form method="POST" action="/addTodo">
+    <input type="text" name="title">
+    <input type="text" name="description">
+    <input type="text" name="task_detail">
+    <input type="submit">
+  </form>
 </body>
 <script>
-  window.onload = ()=>{
-  fetch('/loadTodoList').then(res => res.json())
-    .then(text => document.getElementById("content").innerHTML = text)
+  window.onload = () => {
+    fetch('/loadTodoList').then(res => res.json())
+      .then(text => document.getElementById("content").innerHTML = text)
   }
 </script>
 

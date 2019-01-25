@@ -8,16 +8,24 @@ const {
   HOME_PAGE,
   ROOT_DIR, 
   COOKIES_SEPERATOR,
-  KEY_VALUE_SEPERATOR
+  KEY_VALUE_SEPERATOR,
+  KEY_SEPERATOR
 } = require('./constant.js');
 
 const readData = function (request, response, next) {
+  const userInput = {};
   let content = '';
   request.on('data', data => {
     content = content + data;
   });
   request.on('end', () => {
-    request.body = content;
+    if (content) {
+      content.split(KEY_SEPERATOR).forEach(element => {
+        const [name, value] = element.split(KEY_VALUE_SEPERATOR);
+        userInput[name.trim()] = value.trim();
+      });
+    }
+    request.body = userInput;
     next();
   });
 };
