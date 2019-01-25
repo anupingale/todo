@@ -1,13 +1,5 @@
-const { parseUserInput, renderLoginPage, isValidUser } = require('../src/signup.js');
+const { renderLoginPage, isValidUser, loginHandler } = require('../src/login.js');
 const { expect } = require('chai');
-
-describe('parseUserInput', () => {
-  it('should parse the userDetail in key value pair', () => {
-    const result = parseUserInput("username=abc&password=xyz")
-    expect(result).has.property("username").to.equal("abc");
-    expect(result).has.property("password").to.equal("xyz");
-  });
-});
 
 describe('renderLoginPage', () => {
   it('should redirect to todo.html if cookie is present', () => {
@@ -47,5 +39,22 @@ describe('isValidUser', () => {
   it('should return false if the user details are not present', () => {
     const loginDetails = { username: 'a', password: 'a' };
     expect(isValidUser(users, loginDetails)).to.equal(false);
+  });
+});
+
+describe('loginHandler', () => {
+  it('should return valid status code and redirction url', () => {
+    let users = { get: () => [{ userName: "abc", password: "abc" }] };
+    let req = { body: "userName=abc&password=abc" };
+    let res = {
+      setHeader: () => { },
+      writeHead: (statusCode, redirectURL) => {
+        expect(statusCode).to.equal(302);
+        expect(redirectURL).has.property("Location").to.equal('/pages/todo.html');
+      },
+      write:()=>{},
+      end:() => {}
+    };
+    loginHandler(users,req,res);
   });
 });

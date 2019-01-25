@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const { requestHandler } = require('../src/handler.js');
-const { signupHandler,loginHandler } = require('../src/signup.js');
+const { signupHandler } = require('../src/signup.js');
 
 describe('requestHandler', () => {
   it('should return status code 200 if file exists', () => {
@@ -40,22 +40,5 @@ describe('signupHandler', () => {
       }
     };
     signupHandler(users, req, res);
-  });
-});
-
-describe('loginHandler', () => {
-  it('should return valid status code and redirction url', () => {
-    let users = { get: () => [{ userName: "abc", password: "abc" }] };
-    let req = { body: "userName=abc&password=abc" };
-    let res = {
-      setHeader: () => { },
-      writeHead: (statusCode, redirectURL) => {
-        expect(statusCode).to.equal(302);
-        expect(redirectURL).has.property("Location").to.equal('/pages/todo.html');
-      },
-      write:()=>{},
-      end:() => {}
-    };
-    loginHandler(users,req,res);
   });
 });

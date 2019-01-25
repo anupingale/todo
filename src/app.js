@@ -1,5 +1,6 @@
 const Express = require('./express.js');
-const { signupHandler, loadUserDetails, loginHandler, renderLoginPage } = require('./signup.js');
+const { signupHandler, loadUserDetails } = require('./signup.js');
+const { loginHandler, renderLoginPage } = require('./login.js');
 const { readData, requestHandler, readCookies } = require('./handler.js');
 const app = new Express();
 const { Users } = require('./model/user.js');
