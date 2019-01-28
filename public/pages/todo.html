@@ -6,53 +6,25 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Page Title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-  <script src="main.js"></script>
-  <style>
-
-    .task-status-green{
-  background:green;
-  width: 25px;
-}
-
-
-.task-status-red{
-  width: 25px;
-  background: red;
-}
-    .container {
-      border-bottom: 10px solid white;
-      margin-top: 25px 
-    }
-    .todo-item {
-      max-width: 500px;
-      background: lightgray;
-      border:1px solid black;
-    }
-    .title {
-      font-size: 24px;
-      width:400px
-    }
-  
-  .item {
-    display: flex;
-    margin: 25px;
-  }
-
-.title-Bar{
-  display: flex;
-}
-  .tasks{
-    width: 300px;
-  }
-  
-    .description {
-      font-size: 18px;
-    }
-    </style>
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
 </head>
 
 <body>
+  <div id="myModal" class="modal">
+
+    <div class="modal-content">
+      <span id="btnCloseModal" class="close">&times;</span>
+      <div>
+        <span id="taskOperation"></span>
+        <span style="visibility: hidden;" id="spanTodoId"></span>
+        <span style="visibility: hidden;" id="spanTaskId"></span>
+        <input type="text" id="editTask">
+        <input type="submit" onclick="editTodoTask()">
+      </div>
+    </div>
+
+  </div>
+
   <div id="content" class="todo-item"></div>
   <div>
     Add a new todo
@@ -107,10 +79,20 @@
     loadTodo();
   }
 
+  const openModal = function (event) {
+    let taskId = event.target.id.replace('task_edit_', '');
+    let todoId = event.target.parentElement.id.replace('todo_', '');
+    document.getElementById('spanTodoId').innerText = todoId;
+    document.getElementById('spanTaskId').innerText = taskId;
+    document.getElementById('taskOperation').innerText = "Edit a Task";
+    document.getElementById('myModal').style.display = "block";
+  }
+
   const editTodoTask = function () {
-    const taskDescription = document.getElementById("task_edit_description").value;
-    const taskId = document.getElementById("task_edit_id").value;
-    const todoId = document.getElementById("todo_id_editTask").value;
+    document.getElementById('myModal').style.display = "none";
+    const taskDescription = document.getElementById("editTask").value;
+    const taskId = document.getElementById("spanTaskId").innerText;
+    const todoId = document.getElementById("spanTodoId").innerText;
     fetch("/editTodoTask", { method: "POST", body: JSON.stringify({ todoId, taskId, taskDescription }) });
     loadTodo();
   }
@@ -152,7 +134,7 @@
   const createButton = function (id, name) {
     const operations = {
       add: addTodoTask,
-      Edit: editTodoTask,
+      Edit: openModal,
       Delete: deleteTodoTask,
       Done: toggleTaskStatus,
       Undone: toggleTaskStatus
@@ -238,7 +220,13 @@
     });
   }
 
-  window.onload = () => { loadTodo() };
+  const initialize = function () {
+    document.getElementById("btnCloseModal").onclick = () => {
+      document.getElementById("myModal").style.display = "none";
+    }
+  }
+
+  window.onload = () => { loadTodo(); initialize(); };
 
 </script>
 
