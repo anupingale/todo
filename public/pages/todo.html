@@ -29,34 +29,51 @@
   </div>
 
   <div>
-      Edit a new todo
-      <input type="text" id="todo_edit_id">      
-      <input type="text" id="todo_edit_title">
-      <input type="text" id="todo_edit_description">
-      <input type="submit" onclick="editTodo()">
-    </div>
+    Edit a new todo
+    <input type="text" id="todo_edit_id">
+    <input type="text" id="todo_edit_title">
+    <input type="text" id="todo_edit_description">
+    <input type="submit" onclick="editTodo()">
+  </div>
 
-    <div>
-        Delete a todo
-        <input type="text" id="todo_delete_id">      
-        <input type="submit" onclick="deleteTodo()">
-      </div>
+  <div>
+    Delete a todo
+    <input type="text" id="todo_delete_id">
+    <input type="submit" onclick="deleteTodo()">
+  </div>
 
-      <div>
-        Add a task 
-        <input type="text" id="todo_id_addTask">      
-      <input type="text" id="task_description">
-      <input type="submit" onclick="addTodoTask()">
-      </div>
+  <div>
+    Add a task
+    <input type="text" id="todo_id_addTask">
+    <input type="text" id="task_description">
+    <input type="submit" onclick="addTodoTask()">
+  </div>
+
+  <div>
+    Edit a task
+    <input type="text" id="todo_id_editTask">
+    <input type="text" id="task_edit_id">
+    <input type="text" id="task_edit_description">
+    <input type="submit" onclick="editTodoTask()">
+  </div>
 </body>
 <script>
 
-const addTodoTask = function () {
-    const todoId = document.getElementById("todo_id_addTask").value;
-    const task_description = document.getElementById("task_description").value;
-    fetch("/addTodoTask", { method: "POST", body: JSON.stringify({ todoId, task_description }) });
+  const editTodoTask = function () {
+    const taskDescription = document.getElementById("task_edit_description").value;
+    const taskId = document.getElementById("task_edit_id").value;
+    const todoId = document.getElementById("todo_id_editTask").value;
+    fetch("/editTodoTask", { method: "POST", body: JSON.stringify({ todoId, taskId, taskDescription }) });
     loadTodo();
   }
+
+  const addTodoTask = function () {
+    const todoId = document.getElementById("todo_id_addTask").value;
+    const taskDescription = document.getElementById("task_description").value;
+    fetch("/addTodoTask", { method: "POST", body: JSON.stringify({ todoId, taskDescription }) });
+    loadTodo();
+  }
+
   const deleteTodo = function () {
     const id = document.getElementById("todo_delete_id").value;
     fetch("/deleteUserTodo", { method: "POST", body: JSON.stringify({ id }) });
@@ -74,7 +91,7 @@ const addTodoTask = function () {
     const title = document.getElementById("todo_edit_title").value;
     const id = document.getElementById("todo_edit_id").value;
     const description = document.getElementById("todo_edit_description").value;
-    fetch("/editUserTodo", { method: "POST", body: JSON.stringify({ id,title, description }) });
+    fetch("/editUserTodo", { method: "POST", body: JSON.stringify({ id, title, description }) });
     loadTodo();
   }
 

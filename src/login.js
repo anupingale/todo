@@ -130,10 +130,22 @@ const deleteUserTodo = function (request, response) {
 
 const addTodoTask = function (request, response) {
   let user = getCurrentUser(request.cookies.username);
-  const { todoId, task_description } = JSON.parse(request.body);
+  const { todoId, taskDescription } = JSON.parse(request.body);
   let todoList = new TodoList();
   todoList = user.todoList;
-  todoList[todoId].addTask(task_description);
+  todoList[todoId].addTask(taskDescription);
+  user.addTodoLists(todoList);
+  writeTodoFile(request);
+  response.end();
+}
+
+
+const editTodoTask = function (request, response) {
+  let user = getCurrentUser(request.cookies.username);
+  const { todoId,taskId, taskDescription } = JSON.parse(request.body);
+  let todoList = new TodoList();
+  todoList = user.todoList;
+  todoList[todoId].editTask(taskId,taskDescription);
   user.addTodoLists(todoList);
   writeTodoFile(request);
   response.end();
@@ -147,5 +159,5 @@ module.exports = {
   todoListHandler,
   addUserTodo,
   editUserTodo,
-  deleteUserTodo,addTodoTask
+  deleteUserTodo,addTodoTask,editTodoTask
 };
