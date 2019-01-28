@@ -1,7 +1,5 @@
 const { User } = require('./model/user.js');
-const Todo = require('./model/todo');
-const TodoList = require('./model/todoList');
-const { parseUserInput, isEqual } = require('./util.js');
+const { parseUserInput } = require('./util.js');
 const fs = require('fs');
 const {
   USER_DETAIL_FILE,
@@ -10,6 +8,14 @@ const {
   STATUS_REDIRECTION_FOUND,
   USER_TODO
 } = require('./constant.js');
+
+const writeUserInTodo = function (username) {
+  let userTodoList = JSON.parse(fs.readFileSync(USER_TODO, ENCODING));
+  let newUserTodo = {};
+  newUserTodo[username] = {};
+  userTodoList[userTodoList.length] = newUserTodo;
+  fs.writeFile(USER_TODO, JSON.stringify(userTodoList), err => { });
+}
 
 const writeUserDetails = function (users) {
   return fs.writeFileSync(USER_DETAIL_FILE, users);
@@ -25,25 +31,16 @@ const loadUserDetails = function (users) {
 };
 
 const signupHandler = function (users, request, response) {
-  const { displayName, username, password } = request.body;
+  const { displayName, username, password } = parseUserInput(request.body);
   const user = new User(displayName, username, password);
   users.add(user);
+  writeUserInTodo(username);
   writeUserDetails(JSON.stringify(users.get()));
   response.writeHead(STATUS_REDIRECTION_FOUND, { Location: HOME_PAGE });
   response.end();
 };
 
-
-const todoListHandler = function (users, request, response) {
-  const loggedInUser = request.cookies.username;
-  // let loggedInUserDetails = users.get().filter(user => isEqual(user.username, loggedInUser));
-    // let user = createUser(loggedInUserDetails[0]);
-    // response.write(JSON.stringify(JSON.stringify(user.todoList)));
-    response.end();
-}
-
 module.exports = {
   signupHandler,
-  loadUserDetails,
-  todoListHandler
+  loadUserDetails
 };
