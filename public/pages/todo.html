@@ -89,33 +89,20 @@
     <input type="text" id="task_edit_description">
     <input type="submit" onclick="editTodoTask()">
   </div>
-
-  <div>
-    Delete a task
-    <input type="text" id="todo_id_deleteTask">
-    <input type="text" id="task_delete_id">
-    <input type="submit" onclick="deleteTodoTask()">
-  </div>
-
-  <div>
-    Toggele task status
-    <input type="text" id="todo_id_toggleTaskStatus">
-    <input type="text" id="task_toggle_id">
-    <input type="submit" onclick="toggleTaskStatus()">
-  </div>
 </body>
 <script>
   let result;
   const toggleTaskStatus = function (event) {
-    let taskId = event.target.id.replace('task_done_','');
+    let taskId = event.target.id.replace('task_done_', '');
     let todoId = event.target.parentElement.id.replace('todo_', '');
     fetch("/toggleTaskStatus", { method: "POST", body: JSON.stringify({ todoId, taskId }) });
     loadTodo();
   }
 
-  const deleteTodoTask = function () {
-    const todoId = document.getElementById("todo_id_deleteTask").value;
-    const taskId = document.getElementById("task_delete_id").value;
+  const deleteTodoTask = function (event) {
+    let taskId = event.target.id.replace('task_delete_', '');
+    let todoId = event.target.parentElement.id.replace('todo_', '');
+    console.log('called', taskId, todoId);
     fetch("/deleteTodoTask", { method: "POST", body: JSON.stringify({ todoId, taskId }) });
     loadTodo();
   }
@@ -163,12 +150,19 @@
   }
 
   const createButton = function (id, name) {
+    const operations = {
+      add: addTodoTask,
+      Edit: editTodoTask,
+      Delete: deleteTodoTask,
+      Done: toggleTaskStatus,
+      Undone: toggleTaskStatus
+    }
     const button = document.createElement('input');
     button.type = "button";
     button.value = name;
     button.id = id;
     button.onclick = function (event) {
-      toggleTaskStatus(event);
+      operations[name](event);
     }
     return button;
   }
@@ -192,8 +186,8 @@
     item.appendChild(taskStatus);
     item.appendChild(task);
 
-    item.appendChild(createButton("task_edit_" + key, "edit"));
-    item.appendChild(createButton("task_delete_" + key, "delete"));
+    item.appendChild(createButton("task_edit_" + key, "Edit"));
+    item.appendChild(createButton("task_delete_" + key, "Delete"));
     item.appendChild(createButton("task_done_" + key, statusButtonName));
     return item;
   }
