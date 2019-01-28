@@ -10,6 +10,16 @@
   <script src="main.js"></script>
   <style>
 
+    .task-status-green{
+  background:green;
+  width: 25px;
+}
+
+
+.task-status-red{
+  width: 25px;
+  background: red;
+}
     .container {
       border-bottom: 10px solid white;
       margin-top: 25px 
@@ -95,10 +105,10 @@
   </div>
 </body>
 <script>
-
-  const toggleTaskStatus = function () {
-    const todoId = document.getElementById("todo_id_toggleTaskStatus").value;
-    const taskId = document.getElementById("task_toggle_id").value;
+  let result;
+  const toggleTaskStatus = function (event) {
+    let taskId = event.target.id.replace('task_done_','');
+    let todoId = event.target.parentElement.id.replace('todo_', '');
     fetch("/toggleTaskStatus", { method: "POST", body: JSON.stringify({ todoId, taskId }) });
     loadTodo();
   }
@@ -157,21 +167,34 @@
     button.type = "button";
     button.value = name;
     button.id = id;
+    button.onclick = function (event) {
+      toggleTaskStatus(event);
+    }
     return button;
   }
 
-  const createTask = function (tasks, key) {
+  const createTask = function (tasks, key, todoListKey) {
     let item = document.createElement('div');
     item.className = "item";
-
+    item.id = "todo_" + todoListKey;
     const task = document.createElement('div');
     task.className = "tasks";
     task.innerText = tasks[key].description;
     item.appendChild(task);
 
+    const taskStatus = document.createElement('div');
+    let statusButtonName = "Done";
+    taskStatus.className = "task-status-red";
+    if (tasks[key].status) {
+      statusButtonName = "Undone";
+      taskStatus.className = "task-status-green";
+    }
+    item.appendChild(taskStatus);
+    item.appendChild(task);
+
     item.appendChild(createButton("task_edit_" + key, "edit"));
     item.appendChild(createButton("task_delete_" + key, "delete"));
-    item.appendChild(createButton("task_done_" + key, "done"));
+    item.appendChild(createButton("task_done_" + key, statusButtonName));
     return item;
   }
 
@@ -213,7 +236,7 @@
       const taskKeys = Object.keys(tasks);
 
       taskKeys.forEach(key => {
-        const task = createTask(tasks, key);
+        const task = createTask(tasks, key, todoListKey);
         container.appendChild(task);
       });
       document.getElementById("content").appendChild(container);
@@ -222,6 +245,7 @@
   }
 
   window.onload = () => { loadTodo() };
+
 </script>
 
 </html>
