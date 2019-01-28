@@ -1,6 +1,6 @@
 const { parseUserInput, isEqual } = require('./util.js');
 const { User } = require('../src/model/user.js');
-const { USER_TODO ,ENCODING } = require('./constant.js');
+const { USER_TODO, ENCODING } = require('./constant.js');
 const Todo = require('./model/todo');
 const TodoList = require('./model/todoList');
 let loggedUserArray = {};
@@ -48,7 +48,7 @@ const getCurrentUser = function (username) {
 }
 
 const loginHandler = function (users, request, response) {
-  const loginDetails = parseUserInput( request.body);
+  const loginDetails = parseUserInput(request.body);
   const usersDetail = users.get();
   if (isValidUser(usersDetail, loginDetails)) {
     let loggedInUserDetails = users.get().filter(user => isEqual(user.username, loginDetails.username));
@@ -76,27 +76,27 @@ const renderLoginPage = function (request, response, next) {
 };
 
 const writeTodoFile = function (request) {
-  let data = JSON.parse( fs.readFileSync(USER_TODO, 'utf-8'));
+  let data = JSON.parse(fs.readFileSync(USER_TODO, 'utf-8'));
   let user = loggedUserArray[request.cookies.username];
 
-  for(let i=0; i<data.length; i++){
-    if(data[i].hasOwnProperty(user.username)){
-      data[i][user.username] = user.todoList; 
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].hasOwnProperty(user.username)) {
+      data[i][user.username] = user.todoList;
     }
   }
-  fs.writeFile(USER_TODO,JSON.stringify(data), err=>{});
+  fs.writeFile(USER_TODO, JSON.stringify(data), err => { });
 }
 
-const todoListHandler = function ( request, response) {
+const todoListHandler = function (request, response) {
   let user = getCurrentUser(request.cookies.username);
   response.write(JSON.stringify(user.todoList));
-    response.end();
+  response.end();
 }
 
 const addUserTodo = function (request, response) {
   let user = getCurrentUser(request.cookies.username);
   const { title, description } = JSON.parse(request.body);
-  let todo = new Todo(title,description);
+  let todo = new Todo(title, description);
   let todoList = new TodoList();
   todoList = user.todoList;
   todoList.addTodo(todo);
@@ -105,12 +105,23 @@ const addUserTodo = function (request, response) {
   response.end();
 }
 
-const editUserTodo = function(request, response) {
+const editUserTodo = function (request, response) {
   let user = getCurrentUser(request.cookies.username);
-  const {id, title, description } = JSON.parse(request.body);
+  const { id, title, description } = JSON.parse(request.body);
   let todoList = new TodoList();
   todoList = user.todoList;
-  todoList.editTodo(id, {title, description});
+  todoList.editTodo(id, { title, description });
+  user.addTodoLists(todoList);
+  writeTodoFile(request);
+  response.end();
+}
+
+const deleteUserTodo = function (request, response) {
+  let user = getCurrentUser(request.cookies.username);
+  const { id } = JSON.parse(request.body);
+  let todoList = new TodoList();
+  todoList = user.todoList;
+  todoList.deleteTodo(id);
   user.addTodoLists(todoList);
   writeTodoFile(request);
   response.end();
@@ -123,5 +134,6 @@ module.exports = {
   renderLoginPage,
   todoListHandler,
   addUserTodo,
-  editUserTodo
+  editUserTodo,
+  deleteUserTodo
 };

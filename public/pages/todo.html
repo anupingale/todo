@@ -35,8 +35,20 @@
       <input type="text" id="todo_edit_description">
       <input type="submit" onclick="editTodo()">
     </div>
+
+    <div>
+        Delete a todo
+        <input type="text" id="todo_delete_id">      
+        <input type="submit" onclick="deleteTodo()">
+      </div>
 </body>
 <script>
+
+  const deleteTodo = function () {
+    const id = document.getElementById("todo_delete_id").value;
+    fetch("/deleteUserTodo", { method: "POST", body: JSON.stringify({ id }) });
+    loadTodo();
+  }
 
   const addTodo = function () {
     const title = document.getElementById("todo_title").value;
