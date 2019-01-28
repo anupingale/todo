@@ -9,23 +9,15 @@ const {
   ROOT_DIR, 
   COOKIES_SEPERATOR,
   KEY_VALUE_SEPERATOR,
-  KEY_SEPERATOR
 } = require('./constant.js');
 
 const readData = function (request, response, next) {
-  const userInput = {};
   let content = '';
   request.on('data', data => {
     content = content + data;
   });
   request.on('end', () => {
-    if (content) {
-      content.split(KEY_SEPERATOR).forEach(element => {
-        const [name, value] = element.split(KEY_VALUE_SEPERATOR);
-        userInput[name.trim()] = value.trim();
-      });
-    }
-    request.body = userInput;
+    request.body = content;
     next();
   });
 };
@@ -51,7 +43,7 @@ const requestHandler = function (request, response) {
 
 const serveURLData = function (filePath, response) {
   let statusCode = STATUS_OK;
-  fs.readFile(filePath, ENCODING, (error, content) => {
+  fs.readFile(filePath, (error, content) => {
     if (error) {
       statusCode = STATUS_NOT_FOUND;
       content = PAGE_NOT_FOUND;

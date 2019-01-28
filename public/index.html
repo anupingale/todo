@@ -1,11 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>TODO</title>
   <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
 </head>
+
 <body>
-  <a href="/pages/signup.html">signup</a>
-  <a href="/pages/login.html">login</a>
+  <main class="content">
+    <section class="todoImage">
+      <img src="/images/todo.png" alt="TODO_LOGO">
+    </section>
+    <section class="form">
+      <div>
+        <input type="button" class="input-field btn" id="signup" value="CREATE AN ACCOUNT">
+      </div>
+      <div>
+        <input type="button" class="input-field btn" id="login" value="LOGIN">
+      </div>
+    </section>
+  </main>
 </body>
+<script>
+  document.getElementById("signup").onclick = function () {
+    window.location.href = "/pages/signup.html"
+  }
+  document.getElementById("login").onclick = function () {
+    window.location.href = "/pages/login.html"
+  }
+</script>
+
 </html>

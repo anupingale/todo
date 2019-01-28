@@ -1,15 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Document</title>
-</head>
-<body>
-  <form action="/signup" method="POST">
-<input type="text" name="displayName">  
-<input type="text" name="username">  
-<input type="password" name="password">  
-<input type="submit" value="Signup" >
+<html>
 
-</form>
+<head>
+  <title>Signup</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+</head>
+
+<body>
+  <main class="content">
+    <section class="todoImage">
+      <img src="/images/todo.png" alt="TODO_LOGO">
+    </section>
+    <section class="form">
+      <form action="/signup" method="POST">
+        <input type="text" name="displayName" class="input-field" placeholder="Display Name">
+        <input type="text" name="username" class="input-field" placeholder="Username">
+        <input type="password" name="password" class="input-field" placeholder="Password">
+        <input type="submit" class="input-field btn btn-submit" value="Signup">
+      </form>
+    </section>
+  </main>
 </body>
+
 </html>

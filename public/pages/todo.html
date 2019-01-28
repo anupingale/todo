@@ -22,10 +22,26 @@
   </form>
 </body>
 <script>
-  window.onload = () => {
+  let result;
+ function loadTodo() {
+    document.getElementById("content").innerHTML = '';
     fetch('/loadTodoList').then(res => res.json())
-      .then(text => document.getElementById("content").innerHTML = text)
+      .then(text => {
+        Object.keys(text).forEach(t => {
+          let todo = document.createElement('ul');
+          let para = document.createElement('p');
+          para.innerHTML = t + text[t].title + ':' + text[t].description;
+          todo.appendChild(para);
+          Object.keys(text[t].tasks).forEach(task => {
+            let task1 = document.createElement('li');
+            task1.innerHTML = task + text[t].tasks[task].description + '::' + text[t].tasks[task].status;
+            todo.appendChild(task1);
+          })
+          document.getElementById("content").appendChild(todo);
+        })
+      })
   }
+  window.onload = () => {loadTodo()};
 </script>
 
 </html>

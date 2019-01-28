@@ -1,9 +1,9 @@
 const { parseUserInput, isEqual } = require('./util.js');
 const { User } = require('../src/model/user.js');
-const { USER_TODO, ENCODING } = require('./constant.js');
+const { USER_TODO ,ENCODING } = require('./constant.js');
 const Todo = require('./model/todo');
 const TodoList = require('./model/todoList');
-let loggedInUser;
+let loggedUserArray = {};
 
 const fs = require('fs');
 const isValidUser = function (users, loginDetails) {
@@ -43,14 +43,21 @@ const createUser = function (usersDetails) {
   return user;
 };
 
+const getCurrentUser = function (username) {
+  return loggedUserArray[username];
+}
+
 const loginHandler = function (users, request, response) {
-  const loginDetails = request.body;
+  const loginDetails = parseUserInput( request.body);
   const usersDetail = users.get();
   if (isValidUser(usersDetail, loginDetails)) {
     let loggedInUserDetails = users.get().filter(user => isEqual(user.username, loginDetails.username));
-    loggedInUser = createUser(loggedInUserDetails[0]);
+    let username = loginDetails.username;
+    loggedUserArray[username] = createUser(loggedInUserDetails[0]);
     response.setHeader('Set-Cookie', 'username=' + loginDetails.username);
-    response.writeHead(302, { Location: '/pages/todo.html' });
+    response.statusCode = 302;
+    response.setHeader('Location', '/pages/todo.html');
+    // response.writeHead(302, { Location: '/pages/todo.html' });
     response.end();
     return;
   }
@@ -68,12 +75,34 @@ const renderLoginPage = function (request, response, next) {
   next();
 };
 
+const writeTodoFile = function (request) {
+  let data = JSON.parse( fs.readFileSync(USER_TODO, 'utf-8'));
+  let user = loggedUserArray[request.cookies.username];
+
+  for(let i=0; i<data.length; i++){
+    if(data[i].hasOwnProperty(user.username)){
+      data[i][user.username] = user.todoList; 
+    }
+  }
+  fs.writeFile(USER_TODO,JSON.stringify(data), err=>{});
+}
+
 const insertTodo = function (request, response) {
-  let details = request.body;
+  let user = getCurrentUser(request.cookies.username);
+  let details = JSON.parse( request.body);
   let todo = new Todo(details.title, details.description);
-  todo.addTask(details.task_detail);
-  loggedInUser.addTodoLists(todo);
+  let list = new TodoList();
+  list = user.todoList;
+  list.addTodo(todo)
+  user.addTodoLists(list);
+  writeTodoFile(request);
   response.end();
+}
+
+const todoListHandler = function ( request, response) {
+  let user = getCurrentUser(request.cookies.username);
+  response.write(JSON.stringify(user.todoList));
+    response.end();
 }
 
 module.exports = {
@@ -81,5 +110,6 @@ module.exports = {
   loginHandler,
   isValidUser,
   renderLoginPage,
-  insertTodo
+  insertTodo,
+  todoListHandler,
 };
