@@ -105,11 +105,23 @@ const addUserTodo = function (request, response) {
   response.end();
 }
 
+const editUserTodo = function(request, response) {
+  let user = getCurrentUser(request.cookies.username);
+  const {id, title, description } = JSON.parse(request.body);
+  let todoList = new TodoList();
+  todoList = user.todoList;
+  todoList.editTodo(id, {title, description});
+  user.addTodoLists(todoList);
+  writeTodoFile(request);
+  response.end();
+}
+
 module.exports = {
   parseUserInput,
   loginHandler,
   isValidUser,
   renderLoginPage,
   todoListHandler,
-  addUserTodo
+  addUserTodo,
+  editUserTodo
 };

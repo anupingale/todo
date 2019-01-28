@@ -27,6 +27,14 @@
     <input type="text" id="todo_description">
     <input type="submit" onclick="addTodo()">
   </div>
+
+  <div>
+      Edit a new todo
+      <input type="text" id="todo_edit_id">      
+      <input type="text" id="todo_edit_title">
+      <input type="text" id="todo_edit_description">
+      <input type="submit" onclick="editTodo()">
+    </div>
 </body>
 <script>
 
@@ -34,6 +42,14 @@
     const title = document.getElementById("todo_title").value;
     const description = document.getElementById("todo_description").value;
     fetch("/addUserTodo", { method: "POST", body: JSON.stringify({ title, description }) });
+    loadTodo();
+  }
+
+  const editTodo = function () {
+    const title = document.getElementById("todo_edit_title").value;
+    const id = document.getElementById("todo_edit_id").value;
+    const description = document.getElementById("todo_edit_description").value;
+    fetch("/editUserTodo", { method: "POST", body: JSON.stringify({ id,title, description }) });
     loadTodo();
   }
 
