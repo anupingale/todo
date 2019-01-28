@@ -1,7 +1,7 @@
 const Express = require('./express.js');
 const { signupHandler, loadUserDetails } = require('./signup');
 const { loginHandler, renderLoginPage,todoListHandler, addUserTodo, editUserTodo,
-deleteUserTodo} = require('./login.js');
+deleteUserTodo, addTodoTask} = require('./login.js');
 const { readData, requestHandler, readCookies } = require('./handler.js');
 const app = new Express();
 const { Users } = require('./model/user.js');
@@ -18,6 +18,7 @@ app.post('/login', loginHandler.bind(null, users));
 app.post('/addUserTodo',addUserTodo);
 app.post('/editUserTodo',editUserTodo);
 app.post('/deleteUserTodo',deleteUserTodo);
+app.post('/addTodoTask',addTodoTask);
 app.use(requestHandler);
 
 module.exports = app.requestListener.bind(app);

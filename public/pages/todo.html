@@ -41,9 +41,22 @@
         <input type="text" id="todo_delete_id">      
         <input type="submit" onclick="deleteTodo()">
       </div>
+
+      <div>
+        Add a task 
+        <input type="text" id="todo_id_addTask">      
+      <input type="text" id="task_description">
+      <input type="submit" onclick="addTodoTask()">
+      </div>
 </body>
 <script>
 
+const addTodoTask = function () {
+    const todoId = document.getElementById("todo_id_addTask").value;
+    const task_description = document.getElementById("task_description").value;
+    fetch("/addTodoTask", { method: "POST", body: JSON.stringify({ todoId, task_description }) });
+    loadTodo();
+  }
   const deleteTodo = function () {
     const id = document.getElementById("todo_delete_id").value;
     fetch("/deleteUserTodo", { method: "POST", body: JSON.stringify({ id }) });
