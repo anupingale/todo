@@ -161,6 +161,18 @@ const deleteTodoTask = function (request, response) {
   writeTodoFile(request);
   response.end();
 }
+
+const toggleTaskStatus = function (request, response) {
+  let user = getCurrentUser(request.cookies.username);
+  const { todoId, taskId } = JSON.parse(request.body);
+  let todoList = new TodoList();
+  todoList = user.todoList;
+  todoList[todoId].toggleTaskStatus(taskId);
+  user.addTodoLists(todoList);
+  writeTodoFile(request);
+  response.end();
+}
+
 module.exports = {
   parseUserInput,
   loginHandler,
@@ -172,5 +184,6 @@ module.exports = {
   deleteUserTodo,
   addTodoTask,
   editTodoTask,
-  deleteTodoTask
+  deleteTodoTask,
+  toggleTaskStatus
 };

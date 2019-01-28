@@ -26,14 +26,15 @@ describe('Todo', () => {
   it('should mark task as done in todo', () => {
     const todo = new Todo('Office', 'Office work');
     todo.addTask('Print documents');
-    todo.done(1);
+    todo.toggleTaskStatus(1);
     expect(todo.tasks).has.property(1).to.eql({ description: 'Print documents', status: true });
   });
 
   it('should mark task as not done in todo', () => {
     const todo = new Todo('Office', 'Office work');
     todo.addTask('Print documents');
-    todo.undone(1);
+    todo.toggleTaskStatus(1);
+    todo.toggleTaskStatus(1);
     expect(todo.tasks).has.property(1).to.eql({ description: 'Print documents', status: false });
   });
 

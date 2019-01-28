@@ -63,8 +63,22 @@
     <input type="text" id="task_delete_id">
     <input type="submit" onclick="deleteTodoTask()">
   </div>
+
+  <div>
+      Toggele task status
+      <input type="text" id="todo_id_toggleTaskStatus">
+      <input type="text" id="task_toggle_id">
+      <input type="submit" onclick="toggleTaskStatus()">
+    </div>
 </body>
 <script>
+
+const toggleTaskStatus = function () {
+    const todoId = document.getElementById("todo_id_toggleTaskStatus").value;
+    const taskId = document.getElementById("task_toggle_id").value;
+    fetch("/toggleTaskStatus", { method: "POST", body: JSON.stringify({ todoId, taskId }) });
+    loadTodo();
+  }
 
   const deleteTodoTask = function () {
     const todoId = document.getElementById("todo_id_deleteTask").value;

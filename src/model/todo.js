@@ -27,12 +27,8 @@ class Todo {
     delete this.tasks[taskId];
   }
 
-  done(taskId) {
-    this.tasks[taskId].status = true;
-  }
-
-  undone(taskId) {
-    this.tasks[taskId].status = false;
+  toggleTaskStatus(taskId) {
+    this.tasks[taskId].status = !this.tasks[taskId].status;
   }
 }
 
