@@ -8,19 +8,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
   <script src="main.js"></script>
+  <style>
+
+    .container {
+      border-bottom: 10px solid white;
+      margin-top: 25px 
+    }
+    .todo-item {
+      max-width: 500px;
+      background: lightgray;
+      border:1px solid black;
+    }
+    .title {
+      font-size: 24px;
+      width:400px
+    }
+  
+  .item {
+    display: flex;
+    margin: 25px;
+  }
+
+.title-Bar{
+  display: flex;
+}
+  .tasks{
+    width: 300px;
+  }
+  
+    .description {
+      font-size: 18px;
+    }
+    </style>
 </head>
 
 <body>
-  hello
-  <div id="content"></div>
-
-  <form method="POST" action="/addTodo">
-    <input type="text" name="title">
-    <input type="text" name="description">
-    <input type="text" name="task_detail">
-    <input type="submit">
-  </form>
-
+  <div id="content" class="todo-item"></div>
   <div>
     Add a new todo
     <input type="text" id="todo_title">
@@ -65,15 +88,15 @@
   </div>
 
   <div>
-      Toggele task status
-      <input type="text" id="todo_id_toggleTaskStatus">
-      <input type="text" id="task_toggle_id">
-      <input type="submit" onclick="toggleTaskStatus()">
-    </div>
+    Toggele task status
+    <input type="text" id="todo_id_toggleTaskStatus">
+    <input type="text" id="task_toggle_id">
+    <input type="submit" onclick="toggleTaskStatus()">
+  </div>
 </body>
 <script>
 
-const toggleTaskStatus = function () {
+  const toggleTaskStatus = function () {
     const todoId = document.getElementById("todo_id_toggleTaskStatus").value;
     const taskId = document.getElementById("task_toggle_id").value;
     fetch("/toggleTaskStatus", { method: "POST", body: JSON.stringify({ todoId, taskId }) });
@@ -123,25 +146,81 @@ const toggleTaskStatus = function () {
     loadTodo();
   }
 
-  let result;
   const loadTodo = function () {
     document.getElementById("content").innerHTML = '';
     fetch('/loadTodoList').then(res => res.json())
-      .then(text => {
-        Object.keys(text).forEach(t => {
-          let todo = document.createElement('ul');
-          let para = document.createElement('p');
-          para.innerHTML = t + text[t].title + ':' + text[t].description;
-          todo.appendChild(para);
-          Object.keys(text[t].tasks).forEach(task => {
-            let task1 = document.createElement('li');
-            task1.innerHTML = task + text[t].tasks[task].description + '::' + text[t].tasks[task].status;
-            todo.appendChild(task1);
-          })
-          document.getElementById("content").appendChild(todo);
-        })
-      })
+      .then(text => displayTodo(text));
   }
+
+  const createButton = function (id, name) {
+    const button = document.createElement('input');
+    button.type = "button";
+    button.value = name;
+    button.id = id;
+    return button;
+  }
+
+  const createTask = function (tasks, key) {
+    let item = document.createElement('div');
+    item.className = "item";
+
+    const task = document.createElement('div');
+    task.className = "tasks";
+    task.innerText = tasks[key].description;
+    item.appendChild(task);
+
+    item.appendChild(createButton("task_edit_" + key, "edit"));
+    item.appendChild(createButton("task_delete_" + key, "delete"));
+    item.appendChild(createButton("task_done_" + key, "done"));
+    return item;
+  }
+
+  const createTitle = function (titleName) {
+    const title = document.createElement('div');
+    title.className = "title";
+    title.innerHTML = titleName;
+    return title;
+  }
+
+  const createTitleBar = function (todoTitle) {
+    const titleBar = document.createElement('div');
+    titleBar.className = "title-Bar";
+    let title = createTitle(todoTitle);
+    const btnAddTask = createButton("1", "Add task");
+    titleBar.appendChild(title);
+    titleBar.appendChild(btnAddTask);
+    return titleBar;
+  }
+
+  const createContainer = function (todoLists) {
+    const container = document.createElement('div');
+    container.className = "container";
+
+    const titleBar = createTitleBar(todoLists.title);
+    container.appendChild(titleBar);
+
+    const description = document.createElement('div');
+    description.innerText = todoLists.description;
+    container.appendChild(description);
+    return container;
+  }
+
+  const displayTodo = function (todoLists) {
+    const todoListKeys = Object.keys(todoLists);
+    todoListKeys.forEach(todoListKey => {
+      const container = createContainer(todoLists[todoListKey]);
+      const tasks = todoLists[todoListKey].tasks;
+      const taskKeys = Object.keys(tasks);
+
+      taskKeys.forEach(key => {
+        const task = createTask(tasks, key);
+        container.appendChild(task);
+      });
+      document.getElementById("content").appendChild(container);
+
+    });
+  }
+
   window.onload = () => { loadTodo() };
 </script>
 
