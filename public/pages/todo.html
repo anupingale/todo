@@ -20,10 +20,25 @@
     <input type="text" name="task_detail">
     <input type="submit">
   </form>
+
+  <div>
+    Add a new todo
+    <input type="text" id="todo_title">
+    <input type="text" id="todo_description">
+    <input type="submit" onclick="addTodo()">
+  </div>
 </body>
 <script>
+
+  const addTodo = function () {
+    const title = document.getElementById("todo_title").value;
+    const description = document.getElementById("todo_description").value;
+    fetch("/addUserTodo", { method: "POST", body: JSON.stringify({ title, description }) });
+    loadTodo();
+  }
+
   let result;
- function loadTodo() {
+  const loadTodo = function () {
     document.getElementById("content").innerHTML = '';
     fetch('/loadTodoList').then(res => res.json())
       .then(text => {
@@ -41,7 +56,7 @@
         })
       })
   }
-  window.onload = () => {loadTodo()};
+  window.onload = () => { loadTodo() };
 </script>
 
 </html>

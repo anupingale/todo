@@ -87,22 +87,22 @@ const writeTodoFile = function (request) {
   fs.writeFile(USER_TODO,JSON.stringify(data), err=>{});
 }
 
-const insertTodo = function (request, response) {
-  let user = getCurrentUser(request.cookies.username);
-  let details = JSON.parse( request.body);
-  let todo = new Todo(details.title, details.description);
-  let list = new TodoList();
-  list = user.todoList;
-  list.addTodo(todo)
-  user.addTodoLists(list);
-  writeTodoFile(request);
-  response.end();
-}
-
 const todoListHandler = function ( request, response) {
   let user = getCurrentUser(request.cookies.username);
   response.write(JSON.stringify(user.todoList));
     response.end();
+}
+
+const addUserTodo = function (request, response) {
+  let user = getCurrentUser(request.cookies.username);
+  const { title, description } = JSON.parse(request.body);
+  let todo = new Todo(title,description);
+  let todoList = new TodoList();
+  todoList = user.todoList;
+  todoList.addTodo(todo);
+  user.addTodoLists(todoList);
+  writeTodoFile(request);
+  response.end();
 }
 
 module.exports = {
@@ -110,6 +110,6 @@ module.exports = {
   loginHandler,
   isValidUser,
   renderLoginPage,
-  insertTodo,
   todoListHandler,
+  addUserTodo
 };
