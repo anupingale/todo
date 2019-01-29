@@ -35,12 +35,6 @@
     <input type="text" id="todo_edit_description">
     <input type="submit" onclick="editTodo()">
   </div>
-
-  <div>
-    Delete a todo
-    <input type="text" id="todo_delete_id">
-    <input type="submit" onclick="deleteTodo()">
-  </div>
 </body>
 
 <script>
@@ -96,9 +90,9 @@
     loadTodo();
   }
 
-  const deleteTodo = function () {
-    const id = document.getElementById('todo_delete_id').value;
-    fetch('/deleteUserTodo', { method: 'POST', body: JSON.stringify({ id }) });
+  const deleteTodo = function (event) {
+    let todoId = event.target.parentElement.parentElement.id.replace('container_', '');
+    fetch('/deleteUserTodo', { method: 'POST', body: JSON.stringify({ todoId }) });
     loadTodo();
   }
 
@@ -128,7 +122,8 @@
     'Edit': openTaskEditModal,
     'Delete': deleteTodoTask,
     'Done': toggleTaskStatus,
-    'Undone': toggleTaskStatus
+    'Undone': toggleTaskStatus,
+    'Delete Todo': deleteTodo
   }
 
   const createButton = function (buttonName, id = '') {
@@ -185,8 +180,10 @@
     titleBar.className = 'title-Bar';
     let title = createTitle(todoTitle);
     const btnAddTask = createButton('Add task');
+    const btnDeleteTodo = createButton('Delete Todo');
     titleBar.appendChild(title);
     titleBar.appendChild(btnAddTask);
+    titleBar.appendChild(btnDeleteTodo);
     return titleBar;
   }
 

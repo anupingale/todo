@@ -118,10 +118,10 @@ const editUserTodo = function (request, response) {
 
 const deleteUserTodo = function (request, response) {
   let user = getCurrentUser(request.cookies.username);
-  const { id } = JSON.parse(request.body);
+  const { todoId } = JSON.parse(request.body);
   let todoList = new TodoList();
   todoList = user.todoList;
-  todoList.deleteTodo(id);
+  todoList.deleteTodo(todoId);
   user.addTodoLists(todoList);
   writeTodoFile(request);
   response.end();
