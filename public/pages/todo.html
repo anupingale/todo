@@ -20,7 +20,9 @@
       </div>
     </div>
   </div>
-  <input type="button" value="Add Todo" onclick="openAddTodoModal()">
+  <div>
+    <input type="button" value="Add Todo" onclick="openAddTodoModal()">
+  </div>
   <div id="content" class="todo-item"></div>
 </body>
 
@@ -28,21 +30,20 @@
 
   const toggleTaskStatus = function (event) {
     let taskId = event.target.id.replace('task_done_', '');
-    let todoId = event.target.parentElement.parentElement.id.replace('container_', '');
+    let todoId = event.target.parentElement.parentElement.parentElement.id.replace('container_', '');
     fetch('/toggleTaskStatus', { method: 'POST', body: JSON.stringify({ todoId, taskId }) });
     loadTodo();
   }
-
   const deleteTodoTask = function (event) {
     let taskId = event.target.id.replace('task_delete_', '');
-    let todoId = event.target.parentElement.parentElement.id.replace('container_', '');
+    let todoId = event.target.parentElement.parentElement.parentElement.id.replace('container_', '');
     fetch('/deleteTodoTask', { method: 'POST', body: JSON.stringify({ todoId, taskId }) });
     loadTodo();
   }
 
   const openModal = function (modalDescription, clickHandler, showTitle = 'none') {
     let taskId = event.target.id.replace('task_edit_', '');
-    let todoId = event.target.parentElement.parentElement.id.replace('container_', '');
+    let todoId = event.target.parentElement.parentElement.parentElement.id.replace('container_', '');
     document.getElementById('spanTodoId').innerHTML = todoId;
     document.getElementById('spanTaskId').innerHTML = taskId;
     document.getElementById('taskOperation').innerHTML = modalDescription;
@@ -92,7 +93,7 @@
   }
 
   const deleteTodo = function (event) {
-    let todoId = event.target.parentElement.parentElement.id.replace('container_', '');
+    let todoId = event.target.parentElement.parentElement.parentElement.id.replace('container_', '');
     fetch('/deleteUserTodo', { method: 'POST', body: JSON.stringify({ todoId }) });
     loadTodo();
   }
@@ -165,9 +166,14 @@
     const { btnTaskStatus, statusButtonName } = createTaskToggleButton(tasks[key].status);
     item.appendChild(btnTaskStatus);
     item.appendChild(taskDescription);
-    item.appendChild(createButton('Edit', 'task_edit_' + key));
-    item.appendChild(createButton('Delete', 'task_delete_' + key));
-    item.appendChild(createButton(statusButtonName, 'task_done_' + key));
+
+    const buttons = document.createElement('div');
+    buttons.className = 'button';
+
+    buttons.appendChild(createButton('Edit', 'task_edit_' + key));
+    buttons.appendChild(createButton('Delete', 'task_delete_' + key));
+    buttons.appendChild(createButton(statusButtonName, 'task_done_' + key));
+    item.appendChild(buttons);
     return item;
   }
 
@@ -182,14 +188,17 @@
     const titleBar = document.createElement('div');
     titleBar.className = 'title-Bar';
     let title = createTitle(todoTitle);
+    const buttons = document.createElement('div');
+    buttons.className = 'button';
     const btnAddTask = createButton('Add task');
     const btnDeleteTodo = createButton('Delete Todo');
     const btnEditTodo = createButton('Edit Todo');
     titleBar.appendChild(title);
-    titleBar.appendChild(btnAddTask);
-    titleBar.appendChild(btnEditTodo);
-    titleBar.appendChild(btnDeleteTodo);
-    return titleBar;
+    buttons.appendChild(btnAddTask);
+    buttons.appendChild(btnEditTodo);
+    buttons.appendChild(btnDeleteTodo);
+    titleBar.appendChild(buttons);
+    return titleBar
   }
 
   const createContainer = function (todoLists, todoListKey) {

@@ -53,13 +53,14 @@ body {
 
 .todo-item {
   max-width: 960px;
+  margin: 0 auto;
   background: lightgray;
   border: 1px solid black;
 }
 
 .title {
   font-size: 24px;
-  width: 400px
+  width: 700px
 }
 
 .item {
@@ -72,7 +73,7 @@ body {
 }
 
 .tasks {
-  width: 300px;
+  width: 700px;
 }
 
 .description {
