@@ -107,10 +107,10 @@ const addUserTodo = function (request, response) {
 
 const editUserTodo = function (request, response) {
   let user = getCurrentUser(request.cookies.username);
-  const { id, title, description } = JSON.parse(request.body);
+  const { todoId, title, description } = JSON.parse(request.body);
   let todoList = new TodoList();
   todoList = user.todoList;
-  todoList.editTodo(id, { title, description });
+  todoList.editTodo(todoId, { title, description });
   user.addTodoLists(todoList);
   writeTodoFile(request);
   response.end();

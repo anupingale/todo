@@ -14,7 +14,8 @@
         <span id="taskOperation"></span>
         <span style="visibility: hidden;" id="spanTodoId"></span>
         <span style="visibility: hidden;" id="spanTaskId"></span>
-        <input type="text" id="editTask">
+        <input style="display: none;" type="text" id="editTitle">
+        <input type="text" id="editDescription">
         <input type="submit" id="btnSubmitModal">
       </div>
     </div>
@@ -26,14 +27,6 @@
     <input type="text" id="todo_title">
     <input type="text" id="todo_description">
     <input type="submit" onclick="addTodo()">
-  </div>
-
-  <div>
-    Edit a new todo
-    <input type="text" id="todo_edit_id">
-    <input type="text" id="todo_edit_title">
-    <input type="text" id="todo_edit_description">
-    <input type="submit" onclick="editTodo()">
   </div>
 </body>
 
@@ -53,17 +46,23 @@
     loadTodo();
   }
 
-  const openModal = function (modalDescription, clickHandler) {
+  const openModal = function (modalDescription, clickHandler, showTitle = 'none') {
     let taskId = event.target.id.replace('task_edit_', '');
     let todoId = event.target.parentElement.parentElement.id.replace('container_', '');
     document.getElementById('spanTodoId').innerHTML = todoId;
     document.getElementById('spanTaskId').innerHTML = taskId;
-    document.getElementById('taskOperation').innerHTML = modalDescription
+    document.getElementById('taskOperation').innerHTML = modalDescription;
     document.getElementById('btnSubmitModal').onclick = function () { clickHandler() }
+    document.getElementById('editTitle').style.display = showTitle;
     document.getElementById('myModal').style.display = 'block';
-    document.getElementById('editTask').focus();
-    document.getElementById('editTask').value = '';
+    document.getElementById('editTitle').focus();
+    if (showTitle == 'none') {
+      document.getElementById('editDescription').focus();
+    }
+    document.getElementById('editDescription').value = '';
+    document.getElementById('editTitle').value = '';
   }
+
 
   const openTaskEditModal = function (event) {
     openModal('Edit Task', editTodoTask);
@@ -73,9 +72,13 @@
     openModal('Add Task', addTodoTask);
   }
 
+  const openTodoEditModal = function (event) {
+    openModal('Edit Todo Details', editTodo, 'block');
+  }
+
   const editTodoTask = function () {
     document.getElementById('myModal').style.display = 'none';
-    const taskDescription = document.getElementById('editTask').value;
+    const taskDescription = document.getElementById('editDescription').value;
     const taskId = document.getElementById('spanTaskId').innerHTML;
     const todoId = document.getElementById('spanTodoId').innerHTML;
     fetch('/editTodoTask', { method: 'POST', body: JSON.stringify({ todoId, taskId, taskDescription }) });
@@ -85,7 +88,7 @@
   const addTodoTask = function () {
     document.getElementById('myModal').style.display = 'none';
     const todoId = document.getElementById('spanTodoId').innerHTML;
-    const taskDescription = document.getElementById('editTask').value;
+    const taskDescription = document.getElementById('editDescription').value;
     fetch('/addTodoTask', { method: 'POST', body: JSON.stringify({ todoId, taskDescription }) });
     loadTodo();
   }
@@ -102,12 +105,12 @@
     fetch('/addUserTodo', { method: 'POST', body: JSON.stringify({ title, description }) });
     loadTodo();
   }
-
   const editTodo = function () {
-    const title = document.getElementById('todo_edit_title').value;
-    const id = document.getElementById('todo_edit_id').value;
-    const description = document.getElementById('todo_edit_description').value;
-    fetch('/editUserTodo', { method: 'POST', body: JSON.stringify({ id, title, description }) });
+    document.getElementById('myModal').style.display = 'none';
+    const title = document.getElementById('editTitle').value;
+    const description = document.getElementById('editDescription').value;
+    let todoId = document.getElementById('spanTodoId').innerHTML;
+    fetch('/editUserTodo', { method: 'POST', body: JSON.stringify({ todoId, title, description }) });
     loadTodo();
   }
 
@@ -123,6 +126,7 @@
     'Delete': deleteTodoTask,
     'Done': toggleTaskStatus,
     'Undone': toggleTaskStatus,
+    'Edit Todo': openTodoEditModal,
     'Delete Todo': deleteTodo
   }
 
@@ -181,8 +185,10 @@
     let title = createTitle(todoTitle);
     const btnAddTask = createButton('Add task');
     const btnDeleteTodo = createButton('Delete Todo');
+    const btnEditTodo = createButton('Edit Todo');
     titleBar.appendChild(title);
     titleBar.appendChild(btnAddTask);
+    titleBar.appendChild(btnEditTodo);
     titleBar.appendChild(btnDeleteTodo);
     return titleBar;
   }
