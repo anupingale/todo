@@ -20,14 +20,8 @@
       </div>
     </div>
   </div>
-
+  <input type="button" value="Add Todo" onclick="openAddTodoModal()">
   <div id="content" class="todo-item"></div>
-  <div>
-    Add a new todo
-    <input type="text" id="todo_title">
-    <input type="text" id="todo_description">
-    <input type="submit" onclick="addTodo()">
-  </div>
 </body>
 
 <script>
@@ -76,6 +70,10 @@
     openModal('Edit Todo Details', editTodo, 'block');
   }
 
+  const openAddTodoModal = function (event) {
+    openModal('Add Todo Details', addTodo, 'block');
+  }
+
   const editTodoTask = function () {
     document.getElementById('myModal').style.display = 'none';
     const taskDescription = document.getElementById('editDescription').value;
@@ -100,8 +98,9 @@
   }
 
   const addTodo = function () {
-    const title = document.getElementById('todo_title').value;
-    const description = document.getElementById('todo_description').value;
+    document.getElementById('myModal').style.display = 'none';
+    const title = document.getElementById('editTitle').value;
+    const description = document.getElementById('editDescription').value;
     fetch('/addUserTodo', { method: 'POST', body: JSON.stringify({ title, description }) });
     loadTodo();
   }
