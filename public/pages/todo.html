@@ -4,14 +4,18 @@
 <head>
   <title>TODO</title>
   <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+  <script src="/js/todo.js"></script>
+  <script src="/js/modal.js"></script>
+
+  <script src="/js/todoView.js"></script>
 </head>
 
 <body>
-  <div id="myModal" class="modal">
+  <div id="popupBox" class="modal">
     <div class="modal-content">
       <span id="btnCloseModal" class="close">&times;</span>
       <div>
-        <span id="taskOperation"></span>
+        <span id="modalHeader"></span>
         <span style="visibility: hidden;" id="spanTodoId"></span>
         <span style="visibility: hidden;" id="spanTaskId"></span>
         <input style="display: none;" type="text" id="editTitle">
@@ -21,225 +25,7 @@
     </div>
   </div>
   <div>
-    <input type="button" value="Add Todo" onclick="openAddTodoModal()">
+    <input id="btnAddTodo" type="button" value="Add Todo">
   </div>
-  <div id="content" class="todo-item"></div>
+  <div id="todoListContainer" class="todo-item"></div>
 </body>
-
-<script>
-
-  const toggleTaskStatus = function (event) {
-    let taskId = event.target.id.replace('task_done_', '');
-    let todoId = event.target.parentElement.parentElement.parentElement.id.replace('container_', '');
-    fetch('/toggleTaskStatus', { method: 'POST', body: JSON.stringify({ todoId, taskId }) });
-    loadTodo();
-  }
-  const deleteTodoTask = function (event) {
-    let taskId = event.target.id.replace('task_delete_', '');
-    let todoId = event.target.parentElement.parentElement.parentElement.id.replace('container_', '');
-    fetch('/deleteTodoTask', { method: 'POST', body: JSON.stringify({ todoId, taskId }) });
-    loadTodo();
-  }
-
-  const openModal = function (modalDescription, clickHandler, showTitle = 'none') {
-    let taskId = event.target.id.replace('task_edit_', '');
-    let todoId = event.target.parentElement.parentElement.parentElement.id.replace('container_', '');
-    document.getElementById('spanTodoId').innerHTML = todoId;
-    document.getElementById('spanTaskId').innerHTML = taskId;
-    document.getElementById('taskOperation').innerHTML = modalDescription;
-    document.getElementById('btnSubmitModal').onclick = function () { clickHandler() }
-    document.getElementById('editTitle').style.display = showTitle;
-    document.getElementById('myModal').style.display = 'block';
-    document.getElementById('editTitle').focus();
-    if (showTitle == 'none') {
-      document.getElementById('editDescription').focus();
-    }
-    document.getElementById('editDescription').value = '';
-    document.getElementById('editTitle').value = '';
-  }
-
-
-  const openTaskEditModal = function (event) {
-    openModal('Edit Task', editTodoTask);
-  }
-
-  const openAddTaskModal = function (event) {
-    openModal('Add Task', addTodoTask);
-  }
-
-  const openTodoEditModal = function (event) {
-    openModal('Edit Todo Details', editTodo, 'block');
-  }
-
-  const openAddTodoModal = function (event) {
-    openModal('Add Todo Details', addTodo, 'block');
-  }
-
-  const editTodoTask = function () {
-    document.getElementById('myModal').style.display = 'none';
-    const taskDescription = document.getElementById('editDescription').value;
-    const taskId = document.getElementById('spanTaskId').innerHTML;
-    const todoId = document.getElementById('spanTodoId').innerHTML;
-    fetch('/editTodoTask', { method: 'POST', body: JSON.stringify({ todoId, taskId, taskDescription }) });
-    loadTodo();
-  }
-
-  const addTodoTask = function () {
-    document.getElementById('myModal').style.display = 'none';
-    const todoId = document.getElementById('spanTodoId').innerHTML;
-    const taskDescription = document.getElementById('editDescription').value;
-    fetch('/addTodoTask', { method: 'POST', body: JSON.stringify({ todoId, taskDescription }) });
-    loadTodo();
-  }
-
-  const deleteTodo = function (event) {
-    let todoId = event.target.parentElement.parentElement.parentElement.id.replace('container_', '');
-    fetch('/deleteUserTodo', { method: 'POST', body: JSON.stringify({ todoId }) });
-    loadTodo();
-  }
-
-  const addTodo = function () {
-    document.getElementById('myModal').style.display = 'none';
-    const title = document.getElementById('editTitle').value;
-    const description = document.getElementById('editDescription').value;
-    fetch('/addUserTodo', { method: 'POST', body: JSON.stringify({ title, description }) });
-    loadTodo();
-  }
-  const editTodo = function () {
-    document.getElementById('myModal').style.display = 'none';
-    const title = document.getElementById('editTitle').value;
-    const description = document.getElementById('editDescription').value;
-    let todoId = document.getElementById('spanTodoId').innerHTML;
-    fetch('/editUserTodo', { method: 'POST', body: JSON.stringify({ todoId, title, description }) });
-    loadTodo();
-  }
-
-  const loadTodo = function () {
-    document.getElementById('content').innerHTML = '';
-    fetch('/loadTodoList').then(res => res.json())
-      .then(text => displayTodo(text));
-  }
-
-  const operations = {
-    'Add task': openAddTaskModal,
-    'Edit': openTaskEditModal,
-    'Delete': deleteTodoTask,
-    'Done': toggleTaskStatus,
-    'Undone': toggleTaskStatus,
-    'Edit Todo': openTodoEditModal,
-    'Delete Todo': deleteTodo
-  }
-
-  const createButton = function (buttonName, id = '') {
-    const button = document.createElement('input');
-    button.type = 'button';
-    button.value = buttonName;
-    button.id = id;
-    button.onclick = function (event) {
-      operations[buttonName](event);
-    }
-    return button;
-  }
-
-  const createTaskToggleButton = function (done) {
-    const btnTaskStatus = document.createElement('div');
-    let statusButtonName = 'Done';
-    btnTaskStatus.className = 'task-status-red';
-    if (done) {
-      statusButtonName = 'Undone';
-      btnTaskStatus.className = 'task-status-green';
-    }
-    return { btnTaskStatus, statusButtonName };
-  }
-
-  const createTaskDescription = function (value) {
-    const taskDescription = document.createElement('div');
-    taskDescription.className = 'tasks';
-    taskDescription.innerHTML = value;
-    return taskDescription;
-  }
-
-  const createTask = function (tasks, key) {
-    let item = document.createElement('div');
-    item.className = 'item';
-    const taskDescription = createTaskDescription(tasks[key].description);
-    const { btnTaskStatus, statusButtonName } = createTaskToggleButton(tasks[key].status);
-    item.appendChild(btnTaskStatus);
-    item.appendChild(taskDescription);
-
-    const buttons = document.createElement('div');
-    buttons.className = 'button';
-
-    buttons.appendChild(createButton('Edit', 'task_edit_' + key));
-    buttons.appendChild(createButton('Delete', 'task_delete_' + key));
-    buttons.appendChild(createButton(statusButtonName, 'task_done_' + key));
-    item.appendChild(buttons);
-    return item;
-  }
-
-  const createTitle = function (titleName) {
-    const title = document.createElement('div');
-    title.className = 'title';
-    title.innerHTML = titleName;
-    return title;
-  }
-
-  const createTitleBar = function (todoTitle) {
-    const titleBar = document.createElement('div');
-    titleBar.className = 'title-Bar';
-    let title = createTitle(todoTitle);
-    const buttons = document.createElement('div');
-    buttons.className = 'button';
-    const btnAddTask = createButton('Add task');
-    const btnDeleteTodo = createButton('Delete Todo');
-    const btnEditTodo = createButton('Edit Todo');
-    titleBar.appendChild(title);
-    buttons.appendChild(btnAddTask);
-    buttons.appendChild(btnEditTodo);
-    buttons.appendChild(btnDeleteTodo);
-    titleBar.appendChild(buttons);
-    return titleBar
-  }
-
-  const createContainer = function (todoLists, todoListKey) {
-    const container = document.createElement('div');
-    container.className = 'container';
-    container.id = 'container_' + todoListKey;
-
-    const titleBar = createTitleBar(todoLists.title);
-    container.appendChild(titleBar);
-
-    const description = document.createElement('div');
-    description.innerHTML = todoLists.description;
-    container.appendChild(description);
-    return container;
-  }
-
-  const createTodoDiv = function (todoLists, todoListKey) {
-    const container = createContainer(todoLists[todoListKey], todoListKey);
-    const tasks = todoLists[todoListKey].tasks;
-    const taskKeys = Object.keys(tasks);
-
-    taskKeys.forEach(key => {
-      const task = createTask(tasks, key);
-      container.appendChild(task);
-    });
-    return container;
-  }
-
-  const displayTodo = function (todoLists) {
-    const todoListKeys = Object.keys(todoLists);
-    todoListKeys.forEach(todoListKey => {
-      const todoContainer = createTodoDiv(todoLists, todoListKey);
-      document.getElementById('content').appendChild(todoContainer);
-    });
-  }
-
-  const initialize = function () {
-    document.getElementById('btnCloseModal').onclick = () => {
-      document.getElementById('myModal').style.display = 'none';
-    }
-  }
-  window.onload = () => { loadTodo(); initialize(); };
-
-</script>
