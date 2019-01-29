@@ -1,64 +1,73 @@
-const { parseUserInput, isEqual } = require('./util.js');
-const { User } = require('../src/model/user.js');
-const { USER_TODO, ENCODING } = require('./constant.js');
+const { parseUserInput, isEqual } = require('./util');
+const { User } = require('../src/model/user');
+const { USER_TODO, ENCODING } = require('./constant');
+const { setCookie, redirect } = require('./handler');
 const Todo = require('./model/todo');
 const TodoList = require('./model/todoList');
-let loggedUserArray = {};
-
 const fs = require('fs');
+let currentActiveUsers = {};
+
+const getCurrentActiveUser = username => currentActiveUsers[username];
+
+const getCurrentUserDetails = function (users, username) {
+  const allUsers = users.get();
+  return allUsers.filter(user => isEqual(user.username, username))[0];
+};
+
+const addUserToActiveUsersList = function (users, username) {
+  const loggedInUserDetails = getCurrentUserDetails(users, username);
+  currentActiveUsers[username] = createUser(loggedInUserDetails);
+};
+
+const getCurrentUserTodoList = function (todoList, username) {
+  const getUsername = todo => Object.keys(todo)[0];
+  return todoList.filter(todo => getUsername(todo) == username)[0];
+};
+
 const isValidUser = function (users, loginDetails) {
-  const isValidUsername = (username) => isEqual(username, loginDetails.username);
-  const isValidPassword = (password) => isEqual(password, loginDetails.password);
-  const matchedUsers = users.filter(({ username, password }) =>
-    isValidUsername(username) && isValidPassword(password));
+  const isValidUsername = username => isEqual(username, loginDetails.username);
+  const isValidPassword = password => isEqual(password, loginDetails.password);
+  const matchedUsers = users.filter(
+    ({ username, password }) => isValidUsername(username) && isValidPassword(password)
+  );
   return matchedUsers.length == 1;
 };
 
-
 const getTodoList = function (username) {
-  let content = fs.readFileSync(USER_TODO, ENCODING);
-  let todoList = JSON.parse(content);
-  let userTodoList = todoList.filter(todo => Object.keys(todo)[0] == username)[0];
+  const content = fs.readFileSync(USER_TODO, ENCODING);
+  const todoList = JSON.parse(content);
+  const userTodoList = getCurrentUserTodoList(todoList, username);
   if (userTodoList) {
     return userTodoList[username];
   }
   return {};
-}
+};
 
-const mapTaskWithTodo = function (rawTodoLists, todoList, todoID) {
-  let { title, description, tasks } = rawTodoLists[todoID];
-  let todo = new Todo(title, description, tasks);
+const mapTaskWithTodo = function (userTodoList, todoList, todoID) {
+  const { title, description, tasks } = userTodoList[todoID];
+  const todo = new Todo(title, description, tasks);
   todoList.addTodo(todo);
   return todoList;
-}
+};
 
 const createUser = function (usersDetails) {
-  let { displayName, username, password } = usersDetails;
-  let user = new User(displayName, username, password);
-  const rawTodoLists = getTodoList(username);
-  let todoIDs = Object.keys(rawTodoLists);
+  const { displayName, username, password } = usersDetails;
+  const userTodoList = getTodoList(username);
+  const todoIDs = Object.keys(userTodoList);
   let todoList = new TodoList();
-  todoIDs.reduce(mapTaskWithTodo.bind(null, rawTodoLists), todoList);
+  todoIDs.reduce(mapTaskWithTodo.bind(null, userTodoList), todoList);
+  let user = new User(displayName, username, password);
   user.addTodoLists(todoList);
   return user;
 };
 
-const getCurrentUser = function (username) {
-  return loggedUserArray[username];
-}
-
 const loginHandler = function (users, request, response) {
   const loginDetails = parseUserInput(request.body);
-  const usersDetail = users.get();
-  if (isValidUser(usersDetail, loginDetails)) {
-    let loggedInUserDetails = users.get().filter(user => isEqual(user.username, loginDetails.username));
-    let username = loginDetails.username;
-    loggedUserArray[username] = createUser(loggedInUserDetails[0]);
-    response.setHeader('Set-Cookie', 'username=' + loginDetails.username);
-    response.statusCode = 302;
-    response.setHeader('Location', '/pages/todo.html');
-    // response.writeHead(302, { Location: '/pages/todo.html' });
-    response.end();
+  const username = loginDetails.username;
+  if (isValidUser(users.get(), loginDetails)) {
+    addUserToActiveUsersList(users, username);
+    setCookie(response, 'username=' + username);
+    redirect(response, '/pages/todo.html');
     return;
   }
   response.write('Invalid login credentials');
@@ -68,122 +77,35 @@ const loginHandler = function (users, request, response) {
 const renderLoginPage = function (request, response, next) {
   const cookie = request.cookies.username;
   if (cookie) {
-    response.writeHead(302, { Location: '/pages/todo.html' });
-    response.end();
+    redirect(response, '/pages/todo.html');
     return;
   }
   next();
 };
 
-const writeTodoFile = function (request) {
-  let data = JSON.parse(fs.readFileSync(USER_TODO, 'utf-8'));
-  let user = loggedUserArray[request.cookies.username];
-
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].hasOwnProperty(user.username)) {
-      data[i][user.username] = user.todoList;
+const updateUserTodoInFile = function (request) {
+  let todoLists = JSON.parse(fs.readFileSync(USER_TODO, ENCODING));
+  const user = getCurrentActiveUser(request.cookies.username);
+  todoLists.forEach(todoList => {
+    if (todoList.hasOwnProperty(user.username)) {
+      todoList[user.username] = user.todoList;
     }
-  }
-  fs.writeFile(USER_TODO, JSON.stringify(data), err => { });
-}
+  });
+  fs.writeFile(USER_TODO, JSON.stringify(todoLists), err => { });
+};
 
-const todoListHandler = function (request, response) {
-  let user = getCurrentUser(request.cookies.username);
+const renderTodoList = function (request, response) {
+  let user = getCurrentActiveUser(request.cookies.username);
   response.write(JSON.stringify(user.todoList));
   response.end();
-}
-
-const addUserTodo = function (request, response) {
-  let user = getCurrentUser(request.cookies.username);
-  const { title, description } = JSON.parse(request.body);
-  let todo = new Todo(title, description);
-  let todoList = new TodoList();
-  todoList = user.todoList;
-  todoList.addTodo(todo);
-  user.addTodoLists(todoList);
-  writeTodoFile(request);
-  response.end();
-}
-
-const editUserTodo = function (request, response) {
-  let user = getCurrentUser(request.cookies.username);
-  const { todoId, title, description } = JSON.parse(request.body);
-  let todoList = new TodoList();
-  todoList = user.todoList;
-  todoList.editTodo(todoId, { title, description });
-  user.addTodoLists(todoList);
-  writeTodoFile(request);
-  response.end();
-}
-
-const deleteUserTodo = function (request, response) {
-  let user = getCurrentUser(request.cookies.username);
-  const { todoId } = JSON.parse(request.body);
-  let todoList = new TodoList();
-  todoList = user.todoList;
-  todoList.deleteTodo(todoId);
-  user.addTodoLists(todoList);
-  writeTodoFile(request);
-  response.end();
-}
-
-
-const addTodoTask = function (request, response) {
-  let user = getCurrentUser(request.cookies.username);
-  const { todoId, taskDescription } = JSON.parse(request.body);
-  let todoList = new TodoList();
-  todoList = user.todoList;
-  todoList[todoId].addTask(taskDescription);
-  user.addTodoLists(todoList);
-  writeTodoFile(request);
-  response.end();
-}
-
-
-const editTodoTask = function (request, response) {
-  let user = getCurrentUser(request.cookies.username);
-  const { todoId, taskId, taskDescription } = JSON.parse(request.body);
-  let todoList = new TodoList();
-  todoList = user.todoList;
-  todoList[todoId].editTask(taskId, taskDescription);
-  user.addTodoLists(todoList);
-  writeTodoFile(request);
-  response.end();
-}
-
-const deleteTodoTask = function (request, response) {
-  let user = getCurrentUser(request.cookies.username);
-  const { todoId, taskId } = JSON.parse(request.body);
-  let todoList = new TodoList();
-  todoList = user.todoList;
-  todoList[todoId].deleteTask(taskId)
-  user.addTodoLists(todoList);
-  writeTodoFile(request);
-  response.end();
-}
-
-const toggleTaskStatus = function (request, response) {
-  let user = getCurrentUser(request.cookies.username);
-  const { todoId, taskId } = JSON.parse(request.body);
-  let todoList = new TodoList();
-  todoList = user.todoList;
-  todoList[todoId].toggleTaskStatus(taskId);
-  user.addTodoLists(todoList);
-  writeTodoFile(request);
-  response.end();
-}
+};
 
 module.exports = {
   parseUserInput,
   loginHandler,
   isValidUser,
   renderLoginPage,
-  todoListHandler,
-  addUserTodo,
-  editUserTodo,
-  deleteUserTodo,
-  addTodoTask,
-  editTodoTask,
-  deleteTodoTask,
-  toggleTaskStatus
+  renderTodoList,
+  getCurrentActiveUser,
+  updateUserTodoInFile
 };
