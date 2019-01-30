@@ -3,42 +3,59 @@
 
 <head>
   <title>TODO</title>
-  <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+
   <script src="/js/todo.js"></script>
   <script src="/js/modal.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
   <script src="/js/todoview.js"></script>
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+
+  <style>
+    header {
+    height: 50px;
+    background: blue;
+    text-align: center
+  }
+  .addTodo {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 900px;
+    margin: 15px auto;
+    height: 3s0px;
+  }
+  </style>
 </head>
 
 <body>
-  <div id="popupBox" class="modal">
+  <div id="popupBox" class="modal-box">
     <div class="modal-content">
       <span id="btnCloseModal" class="close">&times;</span>
       <div>
-        <span id="modalHeader"></span>
-        <span style="visibility: hidden;" id="spanTodoId"></span>
-        <span style="visibility: hidden;" id="spanTaskId"></span>
-        <input style="display: none;" type="text" id="editTitle">
-        <input type="text" id="editDescription" required>
-        <input type="submit" id="btnSubmitModal" required>
+        <div class="popupEditBox">
+          <p id="modalHeader"></p>
+          <span style="display: none;" id="spanTodoId"></span>
+          <span style="display: none;" id="spanTaskId"></span>
+          <input style="display: none;" type="text" id="editTitle" placeholder="Title" required>
+          <input type="text" class="input-field" id="editDescription" placeholder="Description" required>
+          <input type="submit" class="input-field btn btn-submit" id="btnSubmitModal" required>
+        </div>
       </div>
     </div>
   </div>
 
-<header>
+  <header>
 
-  Welcome
-  <input type="button" value="Logout" onclick="func()">
-</header>
+    MY TODO LIST
+    <input type="button" class="input-field btn" value="Logout" onclick="logout()">
+  </header>
 
-  <div>
-    <input id="btnAddTodo" type="button" value="Add Todo">
+  <div class="addTodo">
+    <span>Add Todo
+    <span id="btnAddTodo" class="glyphicon glyphicon-plus"></span>
+  </span>
   </div>
-  <div id="todoListContainer" class="todo-item"></div>
-  <script>
-  function func() {
-    fetch('/logout');
-    window.location.href = '/pages/login.html';
-  }
-  </script>
+  <div id="todoListContainer" class="todo-item1"></div>
 </body>

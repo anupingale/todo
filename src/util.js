@@ -24,6 +24,7 @@ const isListEmpty = list => list.length == 0;
 const getUsers = () => JSON.parse(fs.readFileSync(USER_DETAIL_FILE, ENCODING));
 
 const getUsersTodo = function () {
+  console.log('called');
   const usersTodo = JSON.parse(fs.readFileSync(USER_TODO, ENCODING));
   const usersName = Object.keys(usersTodo);
   return parseTodoList(usersName, usersTodo);
@@ -53,10 +54,10 @@ const parseTodo = function (newTodoList) {
 
 
 const updateUsersTodoData = (usersTodo) =>
-  fs.writeFile(USER_TODO, JSON.stringify(usersTodo), err => { });
+  fs.writeFileSync(USER_TODO, JSON.stringify(usersTodo));
 
 const updateUsersData = (users) =>
-  fs.writeFile(USER_DETAIL_FILE, JSON.stringify(users), err => { });
+  fs.writeFileSync(USER_DETAIL_FILE, JSON.stringify(users));
 
 module.exports = {
   parseUserInput,

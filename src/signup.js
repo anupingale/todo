@@ -7,8 +7,10 @@ const { updateUsersData, updateUsersTodoData } = require('./util');
 const users = getUsers();
 const usersTodo = getUsersTodo();
 
-const isValidUser = (username, password) =>
-  users[username] && users[username].password === password;
+const isValidUser = (username, password) => {
+  console.log(usersTodo);
+ return users[username] && users[username].password === password;
+}
 
 const isUserExists = username => users.hasOwnProperty(username);
 

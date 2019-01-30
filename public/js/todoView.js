@@ -5,26 +5,37 @@ const createView = (document, value, cssClass = EMPTY_STRING) => {
   return view;
 };
 
-const createButton = function(document, buttonName, id = EMPTY_STRING) {
-  const button = document.createElement('input');
-  button.type = 'button';
-  button.value = buttonName;
+const imageUrl = {
+  'Add Task': 'glyphicon glyphicon-plus size',
+  'Edit':'glyphicon glyphicon-pencil size',
+  'Edit Todo':'glyphicon glyphicon-pencil size',
+  'Delete':'glyphicon glyphicon-trash size',
+  'Delete Todo':'glyphicon glyphicon-trash size',
+  'Done':'glyphicon glyphicon-ok size',
+  'Undone':'glyphicon glyphicon-remove size'
+}
+
+const createButton = function (document, buttonName, id = EMPTY_STRING) {
+  const button = document.createElement('span');
+  button.alt = buttonName;
+  button.className = imageUrl[buttonName];
   button.id = id;
   button.onclick = operations[buttonName];
   return button;
 };
 
-const createTaskToggleButton = function(document, done) {
-  const btnTaskStatus = createView(document, EMPTY_STRING, 'task-status-red');
+const createTaskToggleButton = function (document, done) {
+  let taskStatus = createView(document, EMPTY_STRING);
+  taskStatus.className = 'task-status task-status-red'
   let statusButtonName = 'Done';
   if (done) {
-    statusButtonName = 'Undone';
-    btnTaskStatus.className = 'task-status-green';
+  taskStatus.className = 'task-status task-status-green'
+  statusButtonName = 'Undone';
   }
-  return { btnTaskStatus, statusButtonName };
+  return { taskStatus, statusButtonName};
 };
 
-const createTaskButtons = function(document, statusButtonName, key) {
+const createTaskButtons = function (document, statusButtonName, key) {
   const buttons = createView(document, EMPTY_STRING, 'button');
   buttons.appendChild(createButton(document, 'Edit', 'task_edit_' + key));
   buttons.appendChild(createButton(document, 'Delete', 'task_delete_' + key));
@@ -32,12 +43,16 @@ const createTaskButtons = function(document, statusButtonName, key) {
   return buttons;
 };
 
-const createTaskView = function(document, task, key) {
+const createTaskView = function (document, task, key) {
   const taskItem = createView(document, EMPTY_STRING, 'item');
-  const taskDescription = createView(document, task.description, 'tasks');
-  const { btnTaskStatus, statusButtonName } = createTaskToggleButton(document, task.status);
+  let taskCss = 'tasks undone';
+  if(task.status){
+    taskCss = 'tasks done';
+  }
+  const taskDescription = createView(document, task.description, taskCss);
+  const {taskStatus, statusButtonName} = createTaskToggleButton(document, task.status);
   const buttons = createTaskButtons(document, statusButtonName, key);
-  taskItem.appendChild(btnTaskStatus);
+  taskItem.appendChild(taskStatus);
   taskItem.appendChild(taskDescription);
   taskItem.appendChild(buttons);
   return taskItem;
@@ -45,7 +60,7 @@ const createTaskView = function(document, task, key) {
 
 const getOperations = document => {
   return {
-    'Add task': openTaskAddModal.bind(null, document),
+    'Add Task': openTaskAddModal.bind(null, document),
     'Edit': openTaskEditModal.bind(null, document),
     'Delete': deleteTodoTask.bind(null, document),
     'Done': toggleTaskStatus.bind(null, document),
@@ -58,15 +73,15 @@ const getOperations = document => {
 
 const operations = getOperations(document);
 
-const createTodoButtons = function(document) {
+const createTodoButtons = function (document) {
   const buttons = createView(document, EMPTY_STRING, 'button');
-  buttons.appendChild(createButton(document, 'Add task'));
+  buttons.appendChild(createButton(document, 'Add Task'));
   buttons.appendChild(createButton(document, 'Delete Todo'));
   buttons.appendChild(createButton(document, 'Edit Todo'));
   return buttons;
 };
 
-const createTitleBar = function(document, todoTitle) {
+const createTitleBar = function (document, todoTitle) {
   const titleBar = createView(document, EMPTY_STRING, 'title-Bar');
   const title = createView(document, todoTitle, 'title');
   const todoButtons = createTodoButtons(document);
@@ -75,16 +90,16 @@ const createTitleBar = function(document, todoTitle) {
   return titleBar;
 };
 
-const createContainer = function(document, todo, todoId) {
+const createContainer = function (document, todo, todoId) {
   const container = document.createElement('div');
-  container.className = 'container';
+  container.className = 'todo-container';
   container.id = 'container_' + todoId;
   container.appendChild(createTitleBar(document, todo.title));
-  container.appendChild(createView(document, todo.description));
+  container.appendChild(createView(document, todo.description, 'description'));
   return container;
 };
 
-const createTodoView = function(document, todo, key) {
+const createTodoView = function (document, todo, key) {
   const container = createContainer(document, todo, key);
   const tasks = todo.tasks;
   const taskKeys = Object.keys(tasks);
@@ -96,10 +111,24 @@ const createTodoView = function(document, todo, key) {
   return container;
 };
 
-const displayTodo = function(document, todoList) {
+const displayTodo = function (document, todoList) {
   const todoListKeys = Object.keys(todoList);
   todoListKeys.forEach(key => {
     const todoContainer = createTodoView(document, todoList[key], key);
     getTodoListContainer(document).appendChild(todoContainer);
   });
 };
+
+window.onclick = () => {
+  if (event.target == getModal(document)) {
+    getModal(document).style.display = DISPLAY_NONE;
+    getTodoListContainer(document).style.display = DISPLAY_BLOCK;
+  }
+}
+
+window.onkeydown = () => {
+  if (event.key == 'Escape') {
+    getModal(document).style.display = DISPLAY_NONE;
+    getTodoListContainer(document).style.display = DISPLAY_BLOCK;
+  }
+}

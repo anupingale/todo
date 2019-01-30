@@ -13,8 +13,9 @@ const sendPostRequest = data => {
   return { method: POST_REQUSET, body: JSON.stringify(data) };
 };
 
-const getInputDetails = function(document) {
+const getInputDetails = function (document) {
   getModal(document).style.display = DISPLAY_NONE;
+  getTodoListContainer(document).style.display = DISPLAY_BLOCK;
   const title = getTodoTitle(document).value;
   const description = getTodoDescription(document).value;
   const todoId = getTodoIdField(document).innerHTML;
@@ -22,57 +23,67 @@ const getInputDetails = function(document) {
   return { title, description, todoId, taskId };
 };
 
-const addTodo = function(document) {
+const addTodo = function (document) {
   const { title, description } = getInputDetails(document);
   fetch('/addUserTodo', sendPostRequest({ title, description }));
   loadTodo(document);
 };
 
-const editTodo = function(document) {
+const editTodo = function (document) {
   const { todoId, title, description } = getInputDetails(document);
   fetch('/editUserTodo', sendPostRequest({ todoId, title, description }));
   loadTodo(document);
 };
 
-const deleteTodo = function(document) {
+const deleteTodo = function (document) {
   const todoId = getTodoID(event);
   fetch('/deleteUserTodo', sendPostRequest({ todoId }));
   loadTodo(document);
 };
 
-const addTodoTask = function(document) {
+const addTodoTask = function (document) {
   const { todoId, description } = getInputDetails(document);
   fetch('/addTodoTask', sendPostRequest({ todoId, taskDescription: description }));
   loadTodo(document);
 };
 
-const editTodoTask = function(document) {
+const editTodoTask = function (document) {
   const { todoId, taskId, description } = getInputDetails(document);
   fetch('/editTodoTask', sendPostRequest({ todoId, taskId, taskDescription: description }));
   loadTodo(document);
 };
 
-const deleteTodoTask = function(document) {
+const deleteTodoTask = function (document) {
   const taskId = getClickedButtonID(event).replace('task_delete_', EMPTY_STRING);
   const todoId = getTodoID(event);
   fetch('/deleteTodoTask', sendPostRequest({ todoId, taskId }));
   loadTodo(document);
 };
 
-const toggleTaskStatus = function(document) {
+const toggleTaskStatus = function (document) {
   const taskId = getClickedButtonID(event).replace('task_done_', EMPTY_STRING);
   const todoId = getTodoID(event);
   fetch('/toggleTaskStatus', sendPostRequest({ todoId, taskId }));
   loadTodo(document);
 };
 
-const loadTodo = function(document) {
+const loadTodo = function (document) {
   setElementValue(getTodoListContainer(document), EMPTY_STRING);
-  fetch('/loadTodoList').then(response => response.json()).then(data => displayTodo(document,data));
+  fetch('/loadTodoList').then(response => response.json()).then(data =>
+    displayTodo(document, data));
 };
+
+
+const logout = function () {
+  fetch('/logout');
+  window.location.href = '/pages/login.html';
+}
 
 window.onload = () => {
   loadTodo(document);
-  getModalCloseButton(document).onclick = () => (getModal(document).style.display = DISPLAY_NONE);
+  getModalCloseButton(document).onclick = () => {
+    getModal(document).style.display = DISPLAY_NONE;
+    getTodoListContainer(document).style.display = DISPLAY_BLOCK;
+  };
   getAddTodoButton(document).onclick = operations['Add Todo'];
 };

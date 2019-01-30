@@ -1,12 +1,17 @@
 const Todo = require('./model/todo');
+const { redirect } = require('./handler');
 const { updateUsersTodoData, getUsersTodo } = require('./util');
 
-const usersTodo = getUsersTodo();
+let usersTodo = getUsersTodo();
 
 const getCurrentUser = cookies => cookies.username;
 
 const renderTodoList = function (request, response) {
   let user = request.cookies.username;
+  if (!user) {
+    return redirect(response, '/pages/login.html');
+  }
+  usersTodo = getUsersTodo();
   response.write(JSON.stringify(usersTodo[user].todoLists));
   response.end();
 };

@@ -52,12 +52,14 @@ const clearTextFields = document => {
   getTodoDescription(document).value = EMPTY_STRING;
 }
 
-const openModal = function (document, modalHeader, clickHandler, showTitle = 'none') {
+const openModal = function (document, modalHeader, clickHandler, showTitle = DISPLAY_NONE) {
+  getTodoListContainer(document).style.display = DISPLAY_NONE;
   setModalView(document, modalHeader);
   getSubmitButton(document).onclick = clickHandler.bind(null, document);
   getTodoDescription(document).focus();
   if (showTitle == DISPLAY_BLOCK) {
     getTodoTitle(document).style.display = DISPLAY_BLOCK;
+    getTodoTitle(document).className = 'input-field field2';
     getTodoTitle(document).focus();
   }
 };
