@@ -72,10 +72,11 @@ const toggleTaskStatus = function (document) {
 const loadTodo = function (document) {
   setElementValue(getTodoListContainer(document), EMPTY_STRING);
   fetch('/loadTodoList').then(response => response.json()).then(data => {
-    if(Object.keys(data).length){
-    displayUserName(document, data.user);
-    displayTodo(document, data.userTodoList);
-    return}
+    if (Object.keys(data).length) {
+      displayUserName(document, data.user);
+      displayTodo(document, data.userTodoList);
+      return;
+    }
     window.location.href = '/pages/login.html';
   })
 };

@@ -1,77 +1,75 @@
 const Todo = require('./model/todo');
 const { send } = require('./handler');
-const { updateUsersTodoData, getUsersTodo } = require('./util');
-
-let usersTodo = getUsersTodo();
+const { updateUsersTodoData } = require('./util');
 
 const getCurrentUser = cookies => cookies.username;
 
-const renderTodoList = function (request, response) {
-  let user = request.cookies.username;
-  if (!user) {
+const renderTodoList = function (cachedData, request, response) {
+  const username = getCurrentUser(request.cookies);
+  if (!username) {
     send(response, JSON.stringify({}), 200);
     return;
   }
-  usersTodo = getUsersTodo();
-  const userTodoList = usersTodo[user].todoLists;
-  response.write(JSON.stringify({userTodoList, user }));
+  const userTodoList = cachedData.usersTodo[username].todoLists;
+  const user = cachedData.users[username].displayName
+  response.write(JSON.stringify({ userTodoList, user }));
   response.end();
 };
 
-const addUserTodo = function (request, response) {
+const addUserTodo = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
   const { title, description } = JSON.parse(request.body);
   const todo = new Todo(title, description);
-  usersTodo[currentUser].addTodo(todo);
-  updateUsersTodoData(usersTodo);
+  cachedData.usersTodo[currentUser].addTodo(todo);
+  updateUsersTodoData(cachedData.usersTodo);
   response.end();
 };
 
-const editUserTodo = function (request, response) {
+const editUserTodo = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
   const { title, description, todoId } = JSON.parse(request.body);
-  usersTodo[currentUser].editTodo(todoId, { title, description });
-  updateUsersTodoData(usersTodo);
+  cachedData.usersTodo[currentUser].editTodo(todoId, { title, description });
+  updateUsersTodoData(cachedData.usersTodo);
   response.end();
 };
 
-const deleteUserTodo = function (request, response) {
+const deleteUserTodo = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
   const { todoId } = JSON.parse(request.body);
-  usersTodo[currentUser].deleteTodo(todoId);
-  updateUsersTodoData(usersTodo);
+  cachedData.usersTodo[currentUser].deleteTodo(todoId);
+  updateUsersTodoData(cachedData.usersTodo);
   response.end();
 };
 
-const addTodoTask = function (request, response) {
+const addTodoTask = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
   const { taskDescription, todoId } = JSON.parse(request.body);
-  usersTodo[currentUser].todoLists[todoId].addTask(taskDescription);
-  updateUsersTodoData(usersTodo);
+  cachedData.usersTodo[currentUser].todoLists[todoId].addTask(taskDescription);
+  updateUsersTodoData(cachedData.usersTodo);
   response.end();
 };
 
-const editTodoTask = function (request, response) {
+const editTodoTask = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
   const { todoId, taskId, taskDescription } = JSON.parse(request.body);
-  usersTodo[currentUser].todoLists[todoId].editTask(taskId, taskDescription);
-  updateUsersTodoData(usersTodo);
+  cachedData.usersTodo[currentUser].todoLists[todoId].editTask(taskId, taskDescription);
+  updateUsersTodoData(cachedData.usersTodo);
   response.end();
 };
 
-const deleteTodoTask = function (request, response) {
+const deleteTodoTask = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
   const { todoId, taskId } = JSON.parse(request.body);
-  usersTodo[currentUser].todoLists[todoId].deleteTask(taskId);
-  updateUsersTodoData(usersTodo);
+  cachedData.usersTodo[currentUser].todoLists[todoId].deleteTask(taskId);
+  updateUsersTodoData(cachedData.usersTodo);
   response.end();
 };
 
-const toggleTaskStatus = function (request, response) {
+const toggleTaskStatus = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
   const { todoId, taskId } = JSON.parse(request.body);
-  usersTodo[currentUser].todoLists[todoId].toggleTaskStatus(taskId);
-  updateUsersTodoData(usersTodo);
+  cachedData.usersTodo[currentUser].todoLists[todoId].toggleTaskStatus(taskId);
+  updateUsersTodoData(cachedData.usersTodo);
   response.end();
 };
 

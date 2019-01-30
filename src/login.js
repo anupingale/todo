@@ -2,10 +2,10 @@ const { parseUserInput } = require('./util');
 const { isValidUser } = require('./signup');
 const { setCookie, redirect } = require('./handler');
 
-const loginHandler = function (request, response) {
-  const loginDetails = parseUserInput(request.body);
-  if (isValidUser(loginDetails.username, loginDetails.password)) {
-    setCookie(response, 'username=' + loginDetails.username);
+const loginHandler = function (cachedData, request, response) {
+  const { username, password } = parseUserInput(request.body);
+  if (isValidUser(cachedData.users, username, password)) {
+    setCookie(response, 'username=' + username);
     return redirect(response, '/pages/todo.html');
   }
   response.end();
@@ -19,8 +19,7 @@ const logoutHandler = function (request, response) {
 const renderLoginPage = function (request, response, next) {
   const cookie = request.cookies.username;
   if (cookie) {
-    redirect(response, '/pages/todo.html');
-    return;
+    return redirect(response, '/pages/todo.html');
   }
   next();
 };

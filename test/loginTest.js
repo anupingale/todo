@@ -18,6 +18,7 @@ describe('renderLoginPage', () => {
 
 describe('loginHandler', () => {
   it('should return valid status code and redirction url', () => {
+    const cachedData = {users:{},usersTodo:{}}
     let req = { body: "username=abc&password=abc" };
     let res = {
       setHeader: () => { },
@@ -28,6 +29,6 @@ describe('loginHandler', () => {
       write:()=>{},
       end:() => {}
     };
-    loginHandler(req,res);
+    loginHandler(cachedData,req,res);
   });
 });
