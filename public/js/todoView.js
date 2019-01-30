@@ -5,7 +5,7 @@ const createView = (document, value, cssClass = EMPTY_STRING) => {
   return view;
 };
 
-const imageUrl = {
+const icon = {
   'Add Task': 'glyphicon glyphicon-plus size',
   'Edit':'glyphicon glyphicon-pencil size',
   'Edit Todo':'glyphicon glyphicon-pencil size',
@@ -18,7 +18,7 @@ const imageUrl = {
 const createButton = function (document, buttonName, id = EMPTY_STRING) {
   const button = document.createElement('span');
   button.alt = buttonName;
-  button.className = imageUrl[buttonName];
+  button.className = icon[buttonName];
   button.id = id;
   button.onclick = operations[buttonName];
   return button;
@@ -119,16 +119,19 @@ const displayTodo = function (document, todoList) {
   });
 };
 
+const hideModal = function (document) {
+  getModal(document).style.display = DISPLAY_NONE;
+  getTodoListContainer(document).style.display = DISPLAY_BLOCK;
+}
+
 window.onclick = () => {
   if (event.target == getModal(document)) {
-    getModal(document).style.display = DISPLAY_NONE;
-    getTodoListContainer(document).style.display = DISPLAY_BLOCK;
+    hideModal(document);
   }
 }
 
 window.onkeydown = () => {
   if (event.key == 'Escape') {
-    getModal(document).style.display = DISPLAY_NONE;
-    getTodoListContainer(document).style.display = DISPLAY_BLOCK;
+    hideModal(document);
   }
 }

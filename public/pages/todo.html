@@ -15,16 +15,31 @@
 
   <style>
     header {
-    height: 50px;
-    background: blue;
-    text-align: center
+    height: 100px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #fafbfc;
   }
   .addTodo {
     display: flex;
     flex-direction: row-reverse;
     width: 900px;
     margin: 15px auto;
-    height: 3s0px;
+    height: 30px;
+  }
+  .logout {
+    width: 90px;
+    float:right;
+    font-size: 20px;
+    font-weight: normal;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .logout:hover {
+    text-decoration: none;
+    border: 1px solid #f2f2f2;
   }
   </style>
 </head>
@@ -47,15 +62,18 @@
   </div>
 
   <header>
-
-    MY TODO LIST
-    <input type="button" class="input-field btn" value="Logout" onclick="logout()">
+    <div>
+      MY TODO LIST
+      <div onclick="logout()" class="logout">Logout</div>
+    </div>
+    <div style="margin-right:90px" id="loggedInUser">
+    </div>
   </header>
 
   <div class="addTodo">
     <span>Add Todo
-    <span id="btnAddTodo" class="glyphicon glyphicon-plus"></span>
-  </span>
+      <span id="btnAddTodo" class="glyphicon glyphicon-plus"></span>
+    </span>
   </div>
   <div id="todoListContainer" class="todo-item1"></div>
 </body>

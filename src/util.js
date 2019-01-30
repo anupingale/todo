@@ -24,7 +24,6 @@ const isListEmpty = list => list.length == 0;
 const getUsers = () => JSON.parse(fs.readFileSync(USER_DETAIL_FILE, ENCODING));
 
 const getUsersTodo = function () {
-  console.log('called');
   const usersTodo = JSON.parse(fs.readFileSync(USER_TODO, ENCODING));
   const usersName = Object.keys(usersTodo);
   return parseTodoList(usersName, usersTodo);

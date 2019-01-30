@@ -70,4 +70,4 @@ const redirect = function(response, url) {
   response.end();
 };
 
-module.exports = { readData, requestHandler, readCookies, setCookie, redirect };
+module.exports = { readData, requestHandler, readCookies, setCookie, redirect, send };

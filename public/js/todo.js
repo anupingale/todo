@@ -1,6 +1,8 @@
 const EMPTY_STRING = '';
+const GREETING_MSG = 'Welcome ';
 const POST_REQUSET = 'POST';
 const DISPLAY_NONE = 'none';
+const getGreetingView = document => document.getElementById('loggedInUser');
 
 const getAddTodoButton = document => document.getElementById('btnAddTodo');
 
@@ -69,10 +71,18 @@ const toggleTaskStatus = function (document) {
 
 const loadTodo = function (document) {
   setElementValue(getTodoListContainer(document), EMPTY_STRING);
-  fetch('/loadTodoList').then(response => response.json()).then(data =>
-    displayTodo(document, data));
+  fetch('/loadTodoList').then(response => response.json()).then(data => {
+    if(Object.keys(data).length){
+    displayUserName(document, data.user);
+    displayTodo(document, data.userTodoList);
+    return}
+    window.location.href = '/pages/login.html';
+  })
 };
 
+const displayUserName = function (document, username) {
+  setElementValue(getGreetingView(document), GREETING_MSG + username);
+}
 
 const logout = function () {
   fetch('/logout');
