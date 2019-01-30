@@ -1,0 +1,164 @@
+body {
+  font-family: sans-serif;
+}
+
+.modal-box {
+  display: none;
+  position: fixed;
+  padding-top: 100px;
+  left: 300px;
+  top: 100px;
+  width: 50%;
+  height: 70%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: black;
+  float: right;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.close:hover, .close:focus {
+  color: black;
+  cursor: pointer;
+}
+
+.todo-container {
+  padding: 10px;
+  background: #fafbfc;
+  border-radius: 10px;
+  margin-bottom: 10px
+}
+
+.todo-item1 {
+  max-width: 960px;
+  margin: 0 auto;
+  height: 600px;
+  overflow: scroll;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  width: 740px;
+  padding-left: 10px;
+}
+
+.item {
+  display: flex;
+  border-bottom: 1px dashed black;
+  margin: 15px;
+}
+
+.title-Bar {
+  display: flex;
+}
+
+.tasks {
+  width: 700px;
+  font-size: 16px;
+}
+
+.description {
+  font-size: 18px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid black;
+}
+
+.btn-icon {
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  margin-left: 30px;
+}
+
+.content {
+  display: flex;
+  width: 960px;
+  margin: 0 auto;
+}
+
+.form {
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.input-field {
+  width: 360px;
+  margin-bottom: 15px;
+  padding: 15px;
+  border: 0;
+  box-sizing: border-box;
+  background: #f2f2f2;
+  font-size: 16px;
+}
+
+.btn {
+  cursor: pointer;
+}
+
+.btn-submit {
+  background: #175AE1;
+  color: white;
+}
+
+.btn:hover {
+  border: 1px solid black;
+  font-weight: bold;
+}
+
+.size {
+  margin-left: 30px;
+}
+
+.glyphicon {
+  font-size: 25px;
+}
+
+.task-status {
+  width: 20px;
+  margin-right: 5px;
+  height: 20px;
+  border-radius: 100%;
+}
+
+.task-status-red {
+  background: red;
+}
+
+.task-status-green {
+  background: green;
+}
+
+.field2 {
+  margin-left: 88px;
+}
+
+.popupEditBox {
+  text-align: center;
+  font-size: 25px;
+}
+
+.done {
+  text-decoration: line-through;
+}
+
+
+.undone {
+  text-decoration: none;
+}
