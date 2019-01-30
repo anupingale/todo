@@ -1,44 +1,33 @@
-const fs = require('fs');
-const { User } = require('./model/user');
-const { parseUserInput } = require('./util');
-const {
-  USER_DETAIL_FILE,
-  ENCODING,
-  HOME_PAGE,
-  STATUS_REDIRECTION_FOUND,
-  USER_TODO
-} = require('./constant');
+const TodoList = require('./model/todoList');
+const { redirect } = require('./handler');
+const { parseUserInput, getUsers, getUsersTodo } = require('./util');
+const { HOME_PAGE, STATUS_REDIRECTION_FOUND } = require('./constant');
+const { updateUsersData, updateUsersTodoData } = require('./util');
 
-const addUserInTodoList = function (username) {
-  let userTodoList = [];
-  if (fs.existsSync(USER_TODO)) {
-    userTodoList = JSON.parse(fs.readFileSync(USER_TODO, ENCODING));
-  }
-  let newUserTodo = {};
-  newUserTodo[username] = {};
-  userTodoList.push(newUserTodo);
-  fs.writeFile(USER_TODO, JSON.stringify(userTodoList), err => { });
-}
+const users = getUsers();
+const usersTodo = getUsersTodo();
 
-const writeUserDetails = function (users) {
-  return fs.writeFileSync(USER_DETAIL_FILE, users);
-};
+const isValidUser = (username, password) =>
+  users[username] && users[username].password === password;
 
-const loadUserDetails = function (users) {
-  if (fs.existsSync(USER_DETAIL_FILE)) {
-    const content = fs.readFileSync(USER_DETAIL_FILE, ENCODING);
-    users.set(JSON.parse(content));
-  }
-};
+const isUserExists = username => users.hasOwnProperty(username);
 
-const signupHandler = function (users, request, response) {
-  const { displayName, username, password } = parseUserInput(request.body);
-  const user = new User(displayName, username, password);
-  users.add(user);
-  addUserInTodoList(username);
-  writeUserDetails(JSON.stringify(users.get()));
+const addNewUserDetails = function (response, userDetails) {
+  const { displayName, username, password } = userDetails
+  users[username] = { displayName, password };
+  usersTodo[username] = new TodoList(0, {});
+  updateUsersData(users);
+  updateUsersTodoData(usersTodo);
   response.writeHead(STATUS_REDIRECTION_FOUND, { Location: HOME_PAGE });
   response.end();
+}
+
+const signupHandler = function (request, response) {
+  const userDetails = parseUserInput(request.body);
+  if (isUserExists(userDetails.username)) {
+    return redirect(response, '/pages/signup.html')
+  }
+  addNewUserDetails(response, userDetails);
 };
 
-module.exports = { signupHandler, loadUserDetails };
+module.exports = { signupHandler, isValidUser };

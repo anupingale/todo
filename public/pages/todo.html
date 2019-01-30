@@ -19,13 +19,26 @@
         <span style="visibility: hidden;" id="spanTodoId"></span>
         <span style="visibility: hidden;" id="spanTaskId"></span>
         <input style="display: none;" type="text" id="editTitle">
-        <input type="text" id="editDescription">
-        <input type="submit" id="btnSubmitModal">
+        <input type="text" id="editDescription" required>
+        <input type="submit" id="btnSubmitModal" required>
       </div>
     </div>
   </div>
+
+<header>
+
+  Welcome
+  <input type="button" value="Logout" onclick="func()">
+</header>
+
   <div>
     <input id="btnAddTodo" type="button" value="Add Todo">
   </div>
   <div id="todoListContainer" class="todo-item"></div>
+  <script>
+  function func() {
+    fetch('/logout');
+    window.location.href = '/pages/login.html';
+  }
+  </script>
 </body>

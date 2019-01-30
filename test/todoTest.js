@@ -51,45 +51,44 @@ describe('TodoList', () => {
   it('should add a todo in todoList', () => {
     const todo = new Todo('Office', 'Office work');
     todo.addTask('Print documents');
-    const userTodoList = new TodoList();
-    userTodoList.addTodo(todo)
-    expect(userTodoList).has.property(1).has.property('title').to.equal('Office');
-    expect(userTodoList).has.property(1).has.property('description').to.equal('Office work');
+    const userTodoList = new TodoList(0, {});
+    userTodoList.addTodo(todo);
+    expect(userTodoList).has.property('id').to.equal(1);
+    expect(userTodoList).has.property('todoLists').has.property('1').to.eql(todo);
   });
 
-  it('should add multiple todo\'s in todoList', () => {
+  it("should add multiple todo's in todoList", () => {
     const todo1 = new Todo('Office', 'Office work');
     const todo2 = new Todo('home', 'home work');
 
     todo1.addTask('Print documents');
     todo2.addTask('study');
 
-    const userTodoList = new TodoList();
-    userTodoList.addTodo(todo1)
-    userTodoList.addTodo(todo2)
+    const userTodoList = new TodoList(0, {});
+    userTodoList.addTodo(todo1);
+    userTodoList.addTodo(todo2);
 
-    expect(userTodoList).has.property(1).has.property('title').to.equal('Office');
-    expect(userTodoList).has.property(1).has.property('description').to.equal('Office work');
-    expect(userTodoList).has.property(2).has.property('title').to.equal('home');
-    expect(userTodoList).has.property(2).has.property('description').to.equal('home work');
+    expect(userTodoList).has.property('id').to.equal(2);
+    expect(userTodoList).has.property('todoLists').has.property('1').to.equal(todo1);
+    expect(userTodoList).has.property('todoLists').has.property('2').to.equal(todo2);
   });
 
   it('should delete a todo from todoList', () => {
     const todo = new Todo('Office', 'Office work');
     todo.addTask('Print documents');
-    const userTodoList = new TodoList();
+    const userTodoList = new TodoList(0, {});
     userTodoList.addTodo(todo);
     userTodoList.deleteTodo(1);
-    expect(userTodoList).to.eql({});
+    expect(userTodoList).has.property('id').to.equal(1);
   });
 
   it('should edit a todo from todoList', () => {
     const todo = new Todo('Office', 'Office work');
     todo.addTask('Print documents');
-    const userTodoList = new TodoList();
+    const userTodoList = new TodoList(0, {});
     userTodoList.addTodo(todo);
     userTodoList.editTodo(1, { title: 'home', description: 'home work' });
-    expect(userTodoList).has.property(1).has.property('title').to.equal('home');
-    expect(userTodoList).has.property(1).has.property('description').to.equal('home work');
+    expect(userTodoList).has.property('id').to.equal(1);
+    expect(userTodoList).has.property('todoLists').has.property('1').to.eql(todo);
   });
 });

@@ -1,25 +1,25 @@
-const { isListEmpty } = require('../util.js');
-
 class TodoList {
-  getNewTodoId() {
-    const todoIds = Object.keys(this);
-    if (isListEmpty(todoIds)) return 1;
-    const lastTodoId = Math.max.apply(null, todoIds);
-    return lastTodoId + 1;
+  constructor(id, list) {
+    this.id = id;
+    this.todoLists = list;
+  }
+
+  updateID() {
+    this.id = this.id + 1;
   }
 
   addTodo(todo) {
-    const todoID = this.getNewTodoId(); 
-    this[todoID] = todo;
+    this.updateID();
+    this.todoLists[this.id] = todo;
   }
 
   editTodo(todoId, todo) {
-    this[todoId].title = todo.title;
-    this[todoId].description = todo.description;
+    this.todoLists[todoId].title = todo.title;
+    this.todoLists[todoId].description = todo.description;
   }
 
   deleteTodo(todoID) {
-    delete this[todoID];
+    delete this.todoLists[todoID];
   }
 }
 

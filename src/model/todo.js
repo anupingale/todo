@@ -1,5 +1,3 @@
-const { isListEmpty } = require('../util.js');
-
 class Todo {
   constructor(title, description, tasks = {}) {
     this.title = title;
@@ -9,7 +7,7 @@ class Todo {
 
   getNewTaskId() {
     const taskIds = Object.keys(this.tasks);
-    if (isListEmpty(taskIds)) return 1;
+    if (taskIds.length == 0) return 1;
     const lastTaskId = Math.max.apply(null, taskIds);
     return lastTaskId + 1;
   }

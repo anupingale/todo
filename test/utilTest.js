@@ -9,7 +9,6 @@ describe('parseUserInput', () => {
   });
 });
 
-
 describe('isEqual', () => {
   it('should return true if values are equal', () => {
     let result = isEqual(1, 1);

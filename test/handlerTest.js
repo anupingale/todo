@@ -26,19 +26,17 @@ describe('requestHandler', () => {
 
 describe('signupHandler', () => {
   it('should return status code 200 if file exists', () => {
-    let users = {
-      add: () =>{ },
-      get: () => []
-    }
     let req = { body: "username=abc&password=xyx&displayName=a1" };
     let res = {
       statusCode: undefined,
-      end: () => { },
-      writeHead: function (statusCode, redirectURL) {
-        expect(statusCode).to.equal(302);
-        expect(redirectURL).has.property("Location").to.equal('/index.html');
-      }
+      redirectURL: undefined,
+      end: function () {
+        expect(this.statusCode).to.equal(302);
+      },
+      writeHead: function () { },
+
+      setHeader: function (location, url) { expect(url).to.equal('/pages/signup.html'); }
     };
-    signupHandler(users, req, res);
+    signupHandler(req, res);
   });
 });

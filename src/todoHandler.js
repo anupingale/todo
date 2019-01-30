@@ -1,69 +1,70 @@
-const { getCurrentActiveUser, updateUserTodoInFile } = require('./login');
 const Todo = require('./model/todo');
-const TodoList = require('./model/todoList');
+const { updateUsersTodoData, getUsersTodo } = require('./util');
 
-const getUserInput = function(request) {
-  let user = getCurrentActiveUser(request.cookies.username);
-  const { title, description, todoId, taskId, taskDescription } = JSON.parse(request.body);
-  let todo = new Todo(title, description);
-  let todoList = new TodoList();
-  todoList = user.todoList;
-  return { user, todoList, todo, todoId, taskId, taskDescription };
-};
+const usersTodo = getUsersTodo();
 
-const addUserTodo = function(request, response) {
-  let { user, todoList, todo } = getUserInput(request);
-  todoList.addTodo(todo);
-  user.addTodoLists(todoList);
-  updateUserTodoInFile(request);
+const getCurrentUser = cookies => cookies.username;
+
+const renderTodoList = function (request, response) {
+  let user = request.cookies.username;
+  response.write(JSON.stringify(usersTodo[user].todoLists));
   response.end();
 };
 
-const editUserTodo = function(request, response) {
-  let { user, todoList, todoId, todo } = getUserInput(request);
-  todoList.editTodo(todoId, todo);
-  user.addTodoLists(todoList);
-  updateUserTodoInFile(request);
+const addUserTodo = function (request, response) {
+  const currentUser = getCurrentUser(request.cookies);
+  const { title, description } = JSON.parse(request.body);
+  const todo = new Todo(title, description);
+  usersTodo[currentUser].addTodo(todo);
+  updateUsersTodoData(usersTodo);
   response.end();
 };
 
-const deleteUserTodo = function(request, response) {
-  let { user, todoList, todoId } = getUserInput(request);
-  todoList.deleteTodo(todoId);
-  user.addTodoLists(todoList);
-  updateUserTodoInFile(request);
+const editUserTodo = function (request, response) {
+  const currentUser = getCurrentUser(request.cookies);
+  const { title, description, todoId } = JSON.parse(request.body);
+  usersTodo[currentUser].editTodo(todoId, { title, description });
+  updateUsersTodoData(usersTodo);
   response.end();
 };
 
-const addTodoTask = function(request, response) {
-  let { user, todoList, todoId, taskDescription } = getUserInput(request);
-  todoList[todoId].addTask(taskDescription);
-  user.addTodoLists(todoList);
-  updateUserTodoInFile(request);
+const deleteUserTodo = function (request, response) {
+  const currentUser = getCurrentUser(request.cookies);
+  const { todoId } = JSON.parse(request.body);
+  usersTodo[currentUser].deleteTodo(todoId);
+  updateUsersTodoData(usersTodo);
   response.end();
 };
 
-const editTodoTask = function(request, response) {
-  let { user, todoList, todoId, taskId, taskDescription } = getUserInput(request);
-  todoList[todoId].editTask(taskId, taskDescription);
-  user.addTodoLists(todoList);
-  updateUserTodoInFile(request);
+const addTodoTask = function (request, response) {
+  const currentUser = getCurrentUser(request.cookies);
+  const { taskDescription, todoId } = JSON.parse(request.body);
+  usersTodo[currentUser].todoLists[todoId].addTask(taskDescription);
+  updateUsersTodoData(usersTodo);
   response.end();
 };
 
-const deleteTodoTask = function(request, response) {
-  let { user, todoList, todoId, taskId } = getUserInput(request);
-  todoList[todoId].deleteTask(taskId);
-  user.addTodoLists(todoList);
-  updateUserTodoInFile(request);
+const editTodoTask = function (request, response) {
+  const currentUser = getCurrentUser(request.cookies);
+  const { todoId, taskId, taskDescription } = JSON.parse(request.body);
+  usersTodo[currentUser].todoLists[todoId].editTask(taskId, taskDescription);
+  updateUsersTodoData(usersTodo);
   response.end();
 };
 
-const toggleTaskStatus = function(request, response) {
-  let { user, todoList, todoId, taskId } = getUserInput(request);
-  todoList[todoId].toggleTaskStatus(taskId);
-  user.addTodoLists(todoList);
-  updateUserTodoInFile(request);
+const deleteTodoTask = function (request, response) {
+  const currentUser = getCurrentUser(request.cookies);
+  const { todoId, taskId } = JSON.parse(request.body);
+  usersTodo[currentUser].todoLists[todoId].deleteTask(taskId);
+  updateUsersTodoData(usersTodo);
+  response.end();
+};
+
+const toggleTaskStatus = function (request, response) {
+  const currentUser = getCurrentUser(request.cookies);
+  const { todoId, taskId } = JSON.parse(request.body);
+  usersTodo[currentUser].todoLists[todoId].toggleTaskStatus(taskId);
+  updateUsersTodoData(usersTodo);
   response.end();
 };
 
@@ -74,5 +75,6 @@ module.exports = {
   addTodoTask,
   editTodoTask,
   deleteTodoTask,
-  toggleTaskStatus
+  toggleTaskStatus,
+  renderTodoList
 };
