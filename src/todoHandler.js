@@ -1,5 +1,5 @@
 const Todo = require('./model/todo');
-const { redirect, send } = require('./handler');
+const { send } = require('./handler');
 const { updateUsersTodoData, getUsersTodo } = require('./util');
 
 let usersTodo = getUsersTodo();
@@ -11,7 +11,6 @@ const renderTodoList = function (request, response) {
   if (!user) {
     send(response, JSON.stringify({}), 200);
     return;
-    // return redirect(response, '/pages/login.html');
   }
   usersTodo = getUsersTodo();
   const userTodoList = usersTodo[user].todoLists;
