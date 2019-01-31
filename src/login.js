@@ -9,7 +9,7 @@ const loginHandler = function (cachedData, request, response) {
     setCookie(response, 'username=' + username);
     return redirect(response, TODO_PAGE);
   }
-  redirect(response, LOGIN_PAGE)
+  redirect(response, LOGIN_PAGE);
 };
 
 const logoutHandler = function (request, response) {
