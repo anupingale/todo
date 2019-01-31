@@ -1,5 +1,5 @@
 const EMPTY_STRING = '';
-const GREETING_MSG = 'Welcome ';
+const GREETING_MSG = '';
 const POST_REQUSET = 'POST';
 const DISPLAY_NONE = 'none';
 const LOGIN_PAGE = '/pages/login.html';
