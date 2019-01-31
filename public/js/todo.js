@@ -1,4 +1,5 @@
 const EMPTY_STRING = '';
+const DISPLAY_FLEX = 'flex';
 const GREETING_MSG = '';
 const POST_REQUSET = 'POST';
 const DISPLAY_NONE = 'none';
@@ -19,7 +20,7 @@ const sendPostRequest = data => {
 
 const getInputDetails = function (document) {
   getModal(document).style.display = DISPLAY_NONE;
-  getTodoListContainer(document).style.display = DISPLAY_BLOCK;
+  getTodoListContainer(document).style.display = DISPLAY_FLEX;
   const title = getTodoTitle(document).value;
   const description = getTodoDescription(document).value;
   const todoId = getTodoIdField(document).innerHTML;
@@ -96,7 +97,7 @@ window.onload = () => {
   loadTodo(document);
   getModalCloseButton(document).onclick = () => {
     getModal(document).style.display = DISPLAY_NONE;
-    getTodoListContainer(document).style.display = DISPLAY_BLOCK;
+    getTodoListContainer(document).style.display = DISPLAY_FLEX;
   };
   getAddTodoButton(document).onclick = operations['Add Todo'];
 };
