@@ -2,6 +2,8 @@ const EMPTY_STRING = '';
 const GREETING_MSG = 'Welcome ';
 const POST_REQUSET = 'POST';
 const DISPLAY_NONE = 'none';
+const LOGIN_PAGE = '/pages/login.html';
+
 const getGreetingView = document => document.getElementById('loggedInUser');
 
 const getAddTodoButton = document => document.getElementById('btnAddTodo');
@@ -77,7 +79,7 @@ const loadTodo = function (document) {
       displayTodo(document, data.userTodoList);
       return;
     }
-    window.location.href = '/pages/login.html';
+    window.location.href = LOGIN_PAGE;
   })
 };
 
@@ -87,7 +89,7 @@ const displayUserName = function (document, username) {
 
 const logout = function () {
   fetch('/logout');
-  window.location.href = '/pages/login.html';
+  window.location.href = LOGIN_PAGE;
 }
 
 window.onload = () => {

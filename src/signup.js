@@ -1,7 +1,7 @@
 const TodoList = require('./model/todoList');
 const { redirect } = require('./handler');
 const { parseUserInput } = require('./util');
-const { HOME_PAGE, STATUS_REDIRECTION_FOUND } = require('./constant');
+const { LOGIN_PAGE, SIGNUP_PAGE } = require('./constant');
 const { updateUsersData, updateUsersTodoData } = require('./util');
 
 const isValidUser = (users, username, password) =>
@@ -15,14 +15,13 @@ const addNewUserDetails = function (cachedData, response, userDetails) {
   cachedData.usersTodo[username] = new TodoList(0, {});
   updateUsersData(cachedData.users);
   updateUsersTodoData(cachedData.usersTodo);
-  response.writeHead(STATUS_REDIRECTION_FOUND, { Location: HOME_PAGE });
-  response.end();
+  redirect(response, LOGIN_PAGE)
 }
 
 const signupHandler = function (cachedData, request, response) {
   const userDetails = parseUserInput(request.body);
   if (isUserExists(cachedData.users, userDetails.username)) {
-    return redirect(response, '/pages/signup.html')
+    return redirect(response, SIGNUP_PAGE);
   }
   addNewUserDetails(cachedData, response, userDetails);
 };

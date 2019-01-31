@@ -6,30 +6,44 @@ const {
   KEY_VALUE_SEPERATOR,
   USER_TODO,
   USER_DETAIL_FILE,
-  ENCODING
-} = require('./constant.js');
+  ENCODING,
+  PLUS_REGEXP,
+  SPACE
+} = require('./constant');
 
 const parseUserInput = userDetails => {
   const args = {};
   const splitKeyValue = pair => pair.split(KEY_VALUE_SEPERATOR);
-  const assignKeyValueToArgs = ([key, value]) => (args[key] = value);
+  const assignKeyValueToArgs = ([key, value]) => (args[key] = decode(value));
   userDetails.split(KEY_SEPERATOR).map(splitKeyValue).forEach(assignKeyValueToArgs);
   return args;
 };
+
+const decode = text => decodeURIComponent(text.replace(PLUS_REGEXP, SPACE));
 
 const isEqual = (value1, value2) => value1 == value2;
 
 const isListEmpty = list => list.length == 0;
 
-const getUsers = () => JSON.parse(fs.readFileSync(USER_DETAIL_FILE, ENCODING));
-
-const getUsersTodo = function () {
-  const usersTodo = JSON.parse(fs.readFileSync(USER_TODO, ENCODING));
-  const usersName = Object.keys(usersTodo);
-  return parseTodoList(usersName, usersTodo);
+const getUsers = () => {
+  if (fs.existsSync(USER_DETAIL_FILE)) {
+    return JSON.parse(fs.readFileSync(USER_DETAIL_FILE, ENCODING));
+  }
+  updateUsersData({});
+  return {};
 };
 
-const parseTodoList = function (usersName, usersTodo) {
+const getUsersTodo = function() {
+  if (fs.existsSync(USER_TODO)) {
+    const usersTodo = JSON.parse(fs.readFileSync(USER_TODO, ENCODING));
+    const usersName = Object.keys(usersTodo);
+    return parseTodoList(usersName, usersTodo);
+  }
+  updateUsersTodoData({});
+  return {};
+};
+
+const parseTodoList = function(usersName, usersTodo) {
   usersName.forEach(userName => {
     const currentUserTodoList = usersTodo[userName];
     const newTodoList = new TodoList(currentUserTodoList.id, currentUserTodoList.todoLists);
@@ -38,7 +52,7 @@ const parseTodoList = function (usersName, usersTodo) {
   return usersTodo;
 };
 
-const parseTodo = function (newTodoList) {
+const parseTodo = function(newTodoList) {
   const todos = Object.keys(newTodoList.todoLists);
   todos.forEach(todo => {
     const currentTodo = newTodoList.todoLists[todo];
@@ -51,12 +65,9 @@ const parseTodo = function (newTodoList) {
   return newTodoList;
 };
 
+const updateUsersTodoData = usersTodo => fs.writeFileSync(USER_TODO, JSON.stringify(usersTodo));
 
-const updateUsersTodoData = (usersTodo) =>
-  fs.writeFileSync(USER_TODO, JSON.stringify(usersTodo));
-
-const updateUsersData = (users) =>
-  fs.writeFileSync(USER_DETAIL_FILE, JSON.stringify(users));
+const updateUsersData = users => fs.writeFileSync(USER_DETAIL_FILE, JSON.stringify(users));
 
 module.exports = {
   parseUserInput,

@@ -137,8 +137,8 @@ body {
   border-radius: 100%;
 }
 
-.task-status-red {
-  background: red;
+.task-status-yellow {
+  background: yellow;
 }
 
 .task-status-green {
@@ -158,7 +158,6 @@ body {
   text-decoration: line-through;
 }
 
-
 .undone {
   text-decoration: none;
-}\
+}

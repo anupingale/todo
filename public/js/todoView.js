@@ -7,12 +7,12 @@ const createView = (document, value, cssClass = EMPTY_STRING) => {
 
 const icon = {
   'Add Task': 'glyphicon glyphicon-plus size',
-  'Edit':'glyphicon glyphicon-pencil size',
-  'Edit Todo':'glyphicon glyphicon-pencil size',
-  'Delete':'glyphicon glyphicon-trash size',
-  'Delete Todo':'glyphicon glyphicon-trash size',
-  'Done':'glyphicon glyphicon-ok size',
-  'Undone':'glyphicon glyphicon-remove size'
+  'Edit': 'glyphicon glyphicon-pencil size',
+  'Edit Todo': 'glyphicon glyphicon-pencil size',
+  'Delete': 'glyphicon glyphicon-trash size',
+  'Delete Todo': 'glyphicon glyphicon-trash size',
+  'Done': 'glyphicon glyphicon-ok size',
+  'Undone': 'glyphicon glyphicon-remove size'
 }
 
 const createButton = function (document, buttonName, id = EMPTY_STRING) {
@@ -26,13 +26,13 @@ const createButton = function (document, buttonName, id = EMPTY_STRING) {
 
 const createTaskToggleButton = function (document, done) {
   let taskStatus = createView(document, EMPTY_STRING);
-  taskStatus.className = 'task-status task-status-red'
+  taskStatus.className = 'task-status task-status-yellow'
   let statusButtonName = 'Done';
   if (done) {
-  taskStatus.className = 'task-status task-status-green'
-  statusButtonName = 'Undone';
+    taskStatus.className = 'task-status task-status-green'
+    statusButtonName = 'Undone';
   }
-  return { taskStatus, statusButtonName};
+  return { taskStatus, statusButtonName };
 };
 
 const createTaskButtons = function (document, statusButtonName, key) {
@@ -46,11 +46,11 @@ const createTaskButtons = function (document, statusButtonName, key) {
 const createTaskView = function (document, task, key) {
   const taskItem = createView(document, EMPTY_STRING, 'item');
   let taskCss = 'tasks undone';
-  if(task.status){
+  if (task.status) {
     taskCss = 'tasks done';
   }
   const taskDescription = createView(document, task.description, taskCss);
-  const {taskStatus, statusButtonName} = createTaskToggleButton(document, task.status);
+  const { taskStatus, statusButtonName } = createTaskToggleButton(document, task.status);
   const buttons = createTaskButtons(document, statusButtonName, key);
   taskItem.appendChild(taskStatus);
   taskItem.appendChild(taskDescription);

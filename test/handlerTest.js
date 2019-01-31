@@ -3,16 +3,6 @@ const { requestHandler } = require('../src/handler.js');
 const { signupHandler } = require('../src/signup.js');
 
 describe('requestHandler', () => {
-  it('should return status code 200 if file exists', () => {
-    let res = {
-      location: undefined,
-      end: function () { expect(this.statusCode).to.equal(200) },
-      write: () => { }
-    };
-    let req = { url: '/' };
-    requestHandler(req, res);
-  });
-
   it('should return status code 404 if file not found', () => {
     let res = {
       statusCode: undefined,

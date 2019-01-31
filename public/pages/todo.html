@@ -15,7 +15,7 @@
 
   <style>
     header {
-    height: 100px;
+    height: 80px;
     text-align: center;
     font-size: 30px;
     font-weight: bold;
@@ -40,6 +40,11 @@
   .logout:hover {
     text-decoration: none;
     border: 1px solid #f2f2f2;
+  }
+
+  .loggedUserName {
+    margin-right: 90px;
+    font-size: 24px;
   }
   </style>
 </head>
@@ -66,7 +71,7 @@
       MY TODO LIST
       <div onclick="logout()" class="logout">Logout</div>
     </div>
-    <div style="margin-right:90px" id="loggedInUser">
+    <div class="loggedUserName" id="loggedInUser">
     </div>
   </header>
 

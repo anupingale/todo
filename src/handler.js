@@ -8,7 +8,7 @@ const {
   COOKIES_SEPERATOR,
   KEY_VALUE_SEPERATOR,
   STATUS_REDIRECTION_FOUND
-} = require('./constant.js');
+} = require('./constant');
 
 const readData = function(request, response, next) {
   let content = '';
