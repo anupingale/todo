@@ -121,7 +121,7 @@ const displayTodo = function (document, todoList) {
 
 const hideModal = function (document) {
   getModal(document).style.display = DISPLAY_NONE;
-  getTodoListContainer(document).style.display = DISPLAY_BLOCK;
+  getTodoListContainer(document).style.display = DISPLAY_FLEX;
 }
 
 window.onclick = () => {

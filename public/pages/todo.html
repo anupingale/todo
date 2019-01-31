@@ -7,7 +7,7 @@
   <script src="/js/modal.js"></script>
   <script src="/js/todo.js"></script>
   <script src="/js/todoview.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -23,26 +23,25 @@
           <p id="modalHeader"></p>
           <span style="display: none;" id="spanTodoId"></span>
           <span style="display: none;" id="spanTaskId"></span>
-          <input style="display: none;" type="text" id="editTitle" placeholder="Title" required>
-          <input type="text" class="input-field" id="editDescription" placeholder="Description" required>
-          <input type="submit" class="input-field btn btn-submit" id="btnSubmitModal" required>
+          <input style="display: none;" type="text" id="editTitle" placeholder="Title" required />
+          <input type="text" class="input-field" id="editDescription" placeholder="Description" required />
+          <input type="submit" class="input-field btn btn-submit" id="btnSubmitModal" required />
         </div>
       </div>
     </div>
   </div>
 
   <header class="todoHeader">
-    <div>
-      <div onclick="logout()" class="logout">Logout</div>
-    </div>
-    <div class="loggedUserName" id="loggedInUser">
-    </div>
+    <img class="todo-icon" src="/images/todo.jpg" alt="" srcset="">
+    <div onclick="logout()" class="logout">Logout</div>
+    <div class="loggedUserName" id="loggedInUser"></div>
   </header>
 
   <div class="addTodo">
-    <span>Add Todo
-      <span id="btnAddTodo" class="glyphicon glyphicon-plus"></span>
+    <span>Add Todo <span id="btnAddTodo" class="glyphicon glyphicon-plus"></span>
     </span>
   </div>
   <div id="todoListContainer" class="todo-item1"></div>
 </body>
+
+</html>
