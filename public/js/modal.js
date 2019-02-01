@@ -31,10 +31,6 @@ const openTodoEditModal = document =>
 const openTaskAddModal = document =>
   openModal(document, HEADER_ADD_TASK, addTodoTask);
 
-const openTaskEditModal = document => {
-  openModal(document, HEADER_EDIT_TASK, editTodoTask);
-};
-
 const setElementValue = (element, value) => element.innerHTML = value;
 
 const setModalView = function (document, modalHeader) {
