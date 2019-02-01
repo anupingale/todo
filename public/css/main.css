@@ -130,6 +130,7 @@ body {
 
 .size {
   margin-left: 30px;
+  cursor: pointer;
 }
 
 .glyphicon {

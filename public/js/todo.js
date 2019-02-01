@@ -9,8 +9,8 @@ const getGreetingView = document => document.getElementById('loggedInUser');
 
 const getAddTodoButton = document => document.getElementById('btnAddTodo');
 
-const getTodoID = event =>
-  event.target.parentElement.parentElement.parentElement.id.replace('container_', EMPTY_STRING);
+const getTodoID = view =>
+  view.parentElement.parentElement.parentElement.id.replace('container_', EMPTY_STRING);
 
 const getClickedButtonID = event => event.target.id;
 
@@ -41,9 +41,11 @@ const editTodo = function (document) {
 };
 
 const deleteTodo = function (document) {
-  const todoId = getTodoID(event);
-  fetch('/deleteUserTodo', sendPostRequest({ todoId }));
-  loadTodo(document);
+  if (confirm("Are you sure, you want to delete?")) {
+    const todoId = getTodoID(event.target);
+    fetch('/deleteUserTodo', sendPostRequest({ todoId }));
+    loadTodo(document);
+  }
 };
 
 const addTodoTask = function (document) {
@@ -52,22 +54,22 @@ const addTodoTask = function (document) {
   loadTodo(document);
 };
 
-const editTodoTask = function (document) {
-  const { todoId, taskId, description } = getInputDetails(document);
+const editTodoTask = function (input) {
+  const { todoId, taskId, description } = input;
   fetch('/editTodoTask', sendPostRequest({ todoId, taskId, taskDescription: description }));
   loadTodo(document);
 };
 
 const deleteTodoTask = function (document) {
   const taskId = getClickedButtonID(event).replace('task_delete_', EMPTY_STRING);
-  const todoId = getTodoID(event);
+  const todoId = getTodoID(event.target);
   fetch('/deleteTodoTask', sendPostRequest({ todoId, taskId }));
   loadTodo(document);
 };
 
 const toggleTaskStatus = function (document) {
   const taskId = getClickedButtonID(event).replace('task_done_', EMPTY_STRING);
-  const todoId = getTodoID(event);
+  const todoId = getTodoID(event.target);
   fetch('/toggleTaskStatus', sendPostRequest({ todoId, taskId }));
   loadTodo(document);
 };

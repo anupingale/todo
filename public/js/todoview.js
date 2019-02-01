@@ -5,6 +5,8 @@ const createView = (document, value, cssClass = EMPTY_STRING) => {
   return view;
 };
 
+const getNumber = value => value.replace(/\D/g, EMPTY_STRING);
+
 const icon = {
   'Add Task': 'glyphicon glyphicon-plus size',
   'Edit': 'glyphicon glyphicon-pencil size',
@@ -43,15 +45,39 @@ const createTaskButtons = function (document, statusButtonName, key) {
   return buttons;
 };
 
-const createTaskView = function (document, task, key) {
-  const taskItem = createView(document, EMPTY_STRING, 'item');
+const createEditBox = function (document, value) {
+  const textBox = document.createElement('input');
+  textBox.type = 'text';
+  textBox.id = 'newTaskDescription';
+  textBox.autofocus = true;
+  textBox.value = value;
+  textBox.onkeydown = editTask;
+  return textBox;
+}
+
+const openTaskEditor = function () {
+  const taskDescriptionView = event.target.parentElement.parentElement.getElementsByClassName('tasks')[0];
+  const taskDetail = taskDescriptionView.innerHTML;
+  const taskTextBox = createEditBox(document, taskDetail);
+  taskDescriptionView.innerHTML = EMPTY_STRING;
+  taskDescriptionView.appendChild(taskTextBox)
+}
+
+const getTaskStatusCssClass = function (taskStatus) {
   let taskCss = 'tasks undone';
-  if (task.status) {
+  if (taskStatus) {
     taskCss = 'tasks done';
   }
+  return taskCss;
+}
+
+const createTaskView = function (document, task, taskId) {
+  const taskItem = createView(document, EMPTY_STRING, 'item');
+  const taskCss = getTaskStatusCssClass(task.status);
   const taskDescription = createView(document, task.description, taskCss);
+  taskDescription.id = "taskDescription_" + taskId;
   const { taskStatus, statusButtonName } = createTaskToggleButton(document, task.status);
-  const buttons = createTaskButtons(document, statusButtonName, key);
+  const buttons = createTaskButtons(document, statusButtonName, taskId);
   taskItem.appendChild(taskStatus);
   taskItem.appendChild(taskDescription);
   taskItem.appendChild(buttons);
@@ -61,7 +87,7 @@ const createTaskView = function (document, task, key) {
 const getOperations = document => {
   return {
     'Add Task': openTaskAddModal.bind(null, document),
-    'Edit': openTaskEditModal.bind(null, document),
+    'Edit': openTaskEditor,// openTaskEditModal.bind(null, document),
     'Delete': deleteTodoTask.bind(null, document),
     'Done': toggleTaskStatus.bind(null, document),
     'Undone': toggleTaskStatus.bind(null, document),
@@ -99,13 +125,13 @@ const createContainer = function (document, todo, todoId) {
   return container;
 };
 
-const createTodoView = function (document, todo, key) {
-  const container = createContainer(document, todo, key);
+const createTodoView = function (document, todo, todoId) {
+  const container = createContainer(document, todo, todoId);
   const tasks = todo.tasks;
   const taskKeys = Object.keys(tasks);
 
-  taskKeys.forEach(key => {
-    const taskView = createTaskView(document, tasks[key], key);
+  taskKeys.forEach(taskId => {
+    const taskView = createTaskView(document, tasks[taskId], taskId, todoId);
     container.appendChild(taskView);
   });
   return container;
@@ -133,5 +159,21 @@ window.onclick = () => {
 window.onkeydown = () => {
   if (event.key == 'Escape') {
     hideModal(document);
+    hideTaskEditor();
+  }
+}
+
+const hideTaskEditor = function () {
+  const taskEditor = document.getElementById('newTaskDescription');
+  taskEditor.parentElement.innerHTML = taskEditor.value;
+}
+
+const editTask = function () {
+  if (event.key == 'Enter') {
+    const newTaskDescription = event.target;
+    const description = newTaskDescription.value;
+    const todoId = getTodoID(newTaskDescription);
+    const taskId = getNumber(newTaskDescription.parentElement.id);
+    editTodoTask({ todoId, taskId, description })
   }
 }

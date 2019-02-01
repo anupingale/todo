@@ -31,14 +31,15 @@ const openTodoEditModal = document =>
 const openTaskAddModal = document =>
   openModal(document, HEADER_ADD_TASK, addTodoTask);
 
-const openTaskEditModal = document =>
+const openTaskEditModal = document => {
   openModal(document, HEADER_EDIT_TASK, editTodoTask);
+};
 
 const setElementValue = (element, value) => element.innerHTML = value;
 
 const setModalView = function (document, modalHeader) {
   const taskId = getClickedButtonID(event).replace('task_edit_', EMPTY_STRING);
-  const todoId = getTodoID(event);
+  const todoId = getTodoID(event.target);
   setElementValue(getTodoIdField(document), todoId);
   setElementValue(getTaskIdField(document), taskId);
   setElementValue(getModalHeader(document), modalHeader);
