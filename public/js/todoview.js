@@ -137,6 +137,7 @@ const createTodoView = function (document, todo, todoId) {
 };
 
 const displayTodo = function (document, todoList) {
+  setElementValue(getTodoListContainer(document), EMPTY_STRING);
   const todoListKeys = Object.keys(todoList);
   todoListKeys.forEach(key => {
     const todoContainer = createTodoView(document, todoList[key], key);
