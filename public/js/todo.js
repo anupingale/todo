@@ -91,9 +91,6 @@ const logout = function () {
 
 window.onload = () => {
   loadTodo(document);
-  getModalCloseButton(document).onclick = () => {
-    setElementDisplayProperty(getModal(document), DISPLAY_NONE);
-    setElementDisplayProperty(getTodoListContainer(document), DISPLAY_FLEX);
-  };
+  getModalCloseButton(document).onclick = () => hideModal(document);
   getAddTodoButton(document).onclick = operations['Add Todo'];
 };

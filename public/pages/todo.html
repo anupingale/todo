@@ -11,7 +11,9 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-  <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="/css/modal.css" />
+  <link rel="stylesheet" type="text/css" href="/css/todo.css" />
 </head>
 
 <body>
@@ -19,7 +21,7 @@
     <div class="modal-content">
       <span id="btnCloseModal" class="close">&times;</span>
       <div>
-        <div class="popupEditBox">
+        <div class="popup-edit-box">
           <p id="modalHeader"></p>
           <span style="display: none;" id="spanTodoId"></span>
           <span style="display: none;" id="spanTaskId"></span>
@@ -31,17 +33,17 @@
     </div>
   </div>
 
-  <header class="todoHeader">
+  <header class="todo-header">
     <img class="todo-icon" src="/images/todoicon.jpg" alt="" srcset="">
     <div onclick="logout()" class="logout">Logout</div>
-    <div class="loggedUserName" id="loggedInUser"></div>
+    <div class="log-in-user-name" id="loggedInUser"></div>
   </header>
 
-  <div class="addTodo">
+  <div class="add-todo">
     <span>Add Todo <span id="btnAddTodo" class="glyphicon glyphicon-plus"></span>
     </span>
   </div>
-  <div id="todoListContainer" class="todo-item1"></div>
+  <div id="todoListContainer" class="todo-item"></div>
 </body>
 
 </html>

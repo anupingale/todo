@@ -1,10 +1,3 @@
-const createView = (document, value, cssClass = EMPTY_STRING) => {
-  const view = document.createElement('div');
-  setElementInnerHTML(view, value);
-  setCssClassToElement(view, cssClass);
-  return view;
-};
-
 const icon = {
   'Add Task': 'glyphicon glyphicon-plus size',
   'Edit': 'glyphicon glyphicon-pencil size',
@@ -15,7 +8,7 @@ const icon = {
   'Undone': 'glyphicon glyphicon-remove size'
 };
 
-const createButton = function(document, buttonName, { taskId, todoId }) {
+const createButton = function (document, buttonName, { taskId, todoId }) {
   const button = document.createElement('span');
   button.alt = buttonName;
   button.className = icon[buttonName];
@@ -23,7 +16,7 @@ const createButton = function(document, buttonName, { taskId, todoId }) {
   return button;
 };
 
-const createTaskToggleButton = function(document, done) {
+const createTaskToggleButton = function (document, done) {
   let taskStatus = createView(document, EMPTY_STRING);
   taskStatus.className = 'task-status task-status-yellow';
   let statusButtonName = 'Done';
@@ -34,15 +27,16 @@ const createTaskToggleButton = function(document, done) {
   return { taskStatus, statusButtonName };
 };
 
-const createTaskButtons = function(document, statusButtonName, taskId, todoId) {
+const createTaskButtons = function (document, statusButtonName, taskId, todoId) {
   const buttons = createView(document, EMPTY_STRING, 'button');
-  buttons.appendChild(createButton(document, 'Edit', { taskId, todoId }));
-  buttons.appendChild(createButton(document, 'Delete', { taskId, todoId }));
-  buttons.appendChild(createButton(document, statusButtonName, { taskId, todoId }));
+  const btnEdit = createButton(document, 'Edit', { taskId, todoId });
+  const btnDelete = createButton(document, 'Delete', { taskId, todoId });
+  const btnToggleStatus = createButton(document, statusButtonName, { taskId, todoId });
+  appendChildren(buttons, [btnEdit, btnDelete, btnToggleStatus]);
   return buttons;
 };
 
-const createEditBox = function(document, value) {
+const createEditBox = function (document, value) {
   const textBox = document.createElement('input');
   textBox.type = 'text';
   textBox.id = 'newTaskDescription';
@@ -52,15 +46,15 @@ const createEditBox = function(document, value) {
   return textBox;
 };
 
-const openTaskEditor = function(document) {
+const openTaskEditor = function (document) {
   const taskDescriptionView = event.target.parentElement.parentElement.getElementsByClassName('tasks')[0];
   const taskDetail = taskDescriptionView.innerHTML;
   const taskTextBox = createEditBox(document, taskDetail);
   setElementInnerHTML(taskDescriptionView, EMPTY_STRING);
-  taskDescriptionView.appendChild(taskTextBox);
+  appendChildren(taskDescriptionView, [taskTextBox]);
 };
 
-const getTaskStatusCssClass = function(taskStatus) {
+const getTaskStatusCssClass = function (taskStatus) {
   let taskCss = 'tasks undone';
   if (taskStatus) {
     taskCss = 'tasks done';
@@ -68,16 +62,14 @@ const getTaskStatusCssClass = function(taskStatus) {
   return taskCss;
 };
 
-const createTaskView = function(document, task, taskId, todoId) {
+const createTaskView = function (document, task, taskId, todoId) {
   const taskItem = createView(document, EMPTY_STRING, 'item');
   const taskCss = getTaskStatusCssClass(task.status);
   const taskDescription = createView(document, task.description, taskCss);
   taskDescription.id = 'taskDescription_' + taskId;
   const { taskStatus, statusButtonName } = createTaskToggleButton(document, task.status);
   const buttons = createTaskButtons(document, statusButtonName, taskId, todoId);
-  taskItem.appendChild(taskStatus);
-  taskItem.appendChild(taskDescription);
-  taskItem.appendChild(buttons);
+  appendChildren(taskItem, [taskStatus, taskDescription, buttons]);
   return taskItem;
 };
 
@@ -96,56 +88,57 @@ const getOperations = document => {
 
 const operations = getOperations(document);
 
-const createTodoButtons = function(document, todoId) {
+const createTodoButtons = function (document, todoId) {
   const buttons = createView(document, EMPTY_STRING, 'button');
-  buttons.appendChild(createButton(document, 'Add Task', { todoId }));
-  buttons.appendChild(createButton(document, 'Delete Todo', { todoId }));
-  buttons.appendChild(createButton(document, 'Edit Todo', { todoId }));
+  const btnAddTask = createButton(document, 'Add Task', { todoId });
+  const btnDeleteTodo = createButton(document, 'Delete Todo', { todoId });
+  const btnEditTodo = createButton(document, 'Edit Todo', { todoId });
+  appendChildren(buttons, [btnAddTask, btnDeleteTodo, btnEditTodo]);
   return buttons;
 };
 
-const createTitleBar = function(document, todoTitle, todoId) {
+const createTitleBar = function (document, todoTitle, todoId) {
   const titleBar = createView(document, EMPTY_STRING, 'title-Bar');
   const title = createView(document, todoTitle, 'title');
   const todoButtons = createTodoButtons(document, todoId);
-  titleBar.appendChild(title);
-  titleBar.appendChild(todoButtons);
+  appendChildren(titleBar, [title, todoButtons]);
   return titleBar;
 };
 
-const createContainer = function(document, todo, todoId) {
+const createContainer = function (document, todo, todoId) {
   const container = document.createElement('div');
   setCssClassToElement(container, 'todo-container');
   container.id = 'container_' + todoId;
-  container.appendChild(createTitleBar(document, todo.title, todoId));
-  container.appendChild(createView(document, todo.description, 'description'));
+  const titleView = createTitleBar(document, todo.title, todoId);
+  const descriptionView = createView(document, todo.description, 'description');
+  appendChildren(container, [titleView, descriptionView]);
   return container;
 };
 
-const createTodoView = function(document, todo, todoId) {
+const createTodoView = function (document, todo, todoId) {
   const container = createContainer(document, todo, todoId);
   const tasks = todo.tasks;
   const taskKeys = Object.keys(tasks);
 
   taskKeys.forEach(taskId => {
     const taskView = createTaskView(document, tasks[taskId], taskId, todoId);
-    container.appendChild(taskView);
+    appendChildren(container, [taskView]);
   });
   return container;
 };
 
-const displayTodo = function(document, todoList) {
+const displayTodo = function (document, todoList) {
   setElementInnerHTML(getTodoListContainer(document), EMPTY_STRING);
   const todoListKeys = Object.keys(todoList);
   todoListKeys.forEach(key => {
     const todoContainer = createTodoView(document, todoList[key], key);
-    getTodoListContainer(document).appendChild(todoContainer);
+    appendChildren(getTodoListContainer(document), [todoContainer]);
   });
 };
 
-const hideModal = function(document) {
+const hideModal = function (document) {
   setElementDisplayProperty(getModal(document), DISPLAY_NONE);
-  setElementDisplayProperty(getTodoIdField(document), DISPLAY_FLEX);
+  setElementDisplayProperty(getTodoListContainer(document), DISPLAY_FLEX);
 };
 
 window.onclick = () => {
@@ -161,12 +154,12 @@ window.onkeydown = () => {
   }
 };
 
-const hideTaskEditor = function(document) {
+const hideTaskEditor = function (document) {
   const taskEditor = getTaskDetailEditBox(document);
   setElementInnerHTML(taskEditor.parentElement, taskEditor.value);
 };
 
-const editTask = function() {
+const editTask = function () {
   if (event.key == 'Enter') {
     const newTaskDescription = event.target;
     const description = newTaskDescription.value;
