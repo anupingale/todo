@@ -1,6 +1,5 @@
 const EMPTY_STRING = '';
 const DISPLAY_FLEX = 'flex';
-const GREETING_MSG = '';
 const POST_REQUSET = 'POST';
 const DISPLAY_NONE = 'none';
 const LOGIN_PAGE = '/pages/login.html';
@@ -9,8 +8,7 @@ const getGreetingView = document => document.getElementById('loggedInUser');
 
 const getAddTodoButton = document => document.getElementById('btnAddTodo');
 
-const getTodoID = view =>
-  view.parentElement.parentElement.parentElement.id.replace('container_', EMPTY_STRING);
+const getTodoID = view => getNumber(view.parentElement.parentElement.parentElement.id);
 
 const getClickedButtonID = event => event.target.id;
 
@@ -19,8 +17,8 @@ const sendPostRequest = data => {
 };
 
 const getInputDetails = function (document) {
-  getModal(document).style.display = DISPLAY_NONE;
-  getTodoListContainer(document).style.display = DISPLAY_FLEX;
+  setElementDisplayProperty(getModal(document), DISPLAY_NONE);
+  setElementDisplayProperty(getTodoListContainer(document), DISPLAY_FLEX);
   const title = getTodoTitle(document).value;
   const description = getTodoDescription(document).value;
   const todoId = getTodoIdField(document).innerHTML;
@@ -29,9 +27,10 @@ const getInputDetails = function (document) {
 };
 
 const sendFetchRequest = function (url, data) {
-  fetch(url, sendPostRequest(data)).then(response => response.json())
+  fetch(url, sendPostRequest(data))
+    .then(response => response.json())
     .then(data => displayTodo(document, data.userTodoList));
-}
+};
 
 const addTodo = function (document) {
   const { title, description } = getInputDetails(document);
@@ -40,47 +39,49 @@ const addTodo = function (document) {
 
 const editTodo = function (document) {
   const { todoId, title, description } = getInputDetails(document);
-  sendFetchRequest('/editUserTodo', { todoId, title, description })
+  sendFetchRequest('/editUserTodo', { todoId, title, description });
 };
 
-const deleteTodo = function (document) {
+const deleteTodo = function () {
   if (confirm('Are you sure, you want to delete?')) {
     const todoId = getTodoID(event.target);
-    sendFetchRequest('/deleteUserTodo', { todoId })
+    sendFetchRequest('/deleteUserTodo', { todoId });
   }
 };
 
 const addTodoTask = function (document) {
   const { todoId, description } = getInputDetails(document);
-  sendFetchRequest('/addTodoTask', { todoId, taskDescription: description })
+  sendFetchRequest('/addTodoTask', { todoId, taskDescription: description });
 };
 
 const editTodoTask = function (newTaskDetail) {
   const { todoId, taskId, description } = newTaskDetail;
-  sendFetchRequest('/editTodoTask', { todoId, taskId, taskDescription: description })
+  sendFetchRequest('/editTodoTask', { todoId, taskId, taskDescription: description });
 };
 
 const deleteTodoTask = function (document, taskId, todoId) {
-  sendFetchRequest('/deleteTodoTask', { todoId, taskId })
+  sendFetchRequest('/deleteTodoTask', { todoId, taskId });
 };
 
 const toggleTaskStatus = function (document, taskId, todoId) {
-  sendFetchRequest('/toggleTaskStatus', { todoId, taskId })
+  sendFetchRequest('/toggleTaskStatus', { todoId, taskId });
 };
 
 const loadTodo = function (document) {
-  fetch('/loadTodoList').then(response => response.json()).then(data => {
-    if (Object.keys(data).length) {
-      displayUserName(document, data.user);
-      displayTodo(document, data.userTodoList);
-      return;
-    }
-    window.location.href = LOGIN_PAGE;
-  });
+  fetch('/loadTodoList')
+    .then(response => response.json())
+    .then(data => {
+      if (Object.keys(data).length) {
+        displayUserName(document, data.user);
+        displayTodo(document, data.userTodoList);
+        return;
+      }
+      window.location.href = LOGIN_PAGE;
+    });
 };
 
 const displayUserName = function (document, username) {
-  setElementValue(getGreetingView(document), GREETING_MSG + username);
+  setElementInnerHTML(getGreetingView(document), username);
 };
 
 const logout = function () {
@@ -91,8 +92,8 @@ const logout = function () {
 window.onload = () => {
   loadTodo(document);
   getModalCloseButton(document).onclick = () => {
-    getModal(document).style.display = DISPLAY_NONE;
-    getTodoListContainer(document).style.display = DISPLAY_FLEX;
+    setElementDisplayProperty(getModal(document), DISPLAY_NONE);
+    setElementDisplayProperty(getTodoListContainer(document), DISPLAY_FLEX);
   };
   getAddTodoButton(document).onclick = operations['Add Todo'];
 };

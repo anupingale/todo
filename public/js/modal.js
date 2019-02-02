@@ -1,6 +1,5 @@
 const DISPLAY_BLOCK = 'block';
 const HEADER_ADD_TASK = 'Add Task';
-const HEADER_EDIT_TASK = 'Edit Task';
 const HEADER_ADD_TODO = 'Add Todo';
 const HEADER_EDIT_TODO = 'Edit Todo Details';
 
@@ -18,9 +17,11 @@ const getTodoDescription = document => document.getElementById('editDescription'
 
 const getSubmitButton = document => document.getElementById('btnSubmitModal');
 
-const getModalCloseButton = document =>document.getElementById('btnCloseModal');
+const getModalCloseButton = document => document.getElementById('btnCloseModal');
 
 const getTodoListContainer = document => document.getElementById('todoListContainer');
+
+const getTaskDetailEditBox = document => document.getElementById('newTaskDescription');
 
 const openTodoAddModal = document =>
   openModal(document, HEADER_ADD_TODO, addTodo, DISPLAY_BLOCK);
@@ -31,32 +32,30 @@ const openTodoEditModal = document =>
 const openTaskAddModal = document =>
   openModal(document, HEADER_ADD_TASK, addTodoTask);
 
-const setElementValue = (element, value) => element.innerHTML = value;
-
 const setModalView = function (document, modalHeader) {
-  const taskId = getClickedButtonID(event).replace('task_edit_', EMPTY_STRING);
+  const taskId = getNumber(getClickedButtonID(event));
   const todoId = getTodoID(event.target);
-  setElementValue(getTodoIdField(document), todoId);
-  setElementValue(getTaskIdField(document), taskId);
-  setElementValue(getModalHeader(document), modalHeader);
-  getTodoTitle(document).style.display = DISPLAY_NONE;
-  getModal(document).style.display = DISPLAY_BLOCK;
+  setElementInnerHTML(getTodoIdField(document), todoId);
+  setElementInnerHTML(getTaskIdField(document), taskId);
+  setElementInnerHTML(getModalHeader(document), modalHeader);
+  setElementDisplayProperty(getTodoTitle(document), DISPLAY_NONE);
+  setElementDisplayProperty(getModal(document), DISPLAY_BLOCK);
   clearTextFields(document);
 };
 
 const clearTextFields = document => {
-  getTodoTitle(document).value = EMPTY_STRING;
-  getTodoDescription(document).value = EMPTY_STRING;
+  setElementValue(getTodoTitle(document), EMPTY_STRING);
+  setElementValue(getTodoDescription(document), EMPTY_STRING);
 }
 
 const openModal = function (document, modalHeader, clickHandler, showTitle = DISPLAY_NONE) {
-  getTodoListContainer(document).style.display = DISPLAY_NONE;
+  setElementDisplayProperty(getTodoListContainer(document), DISPLAY_NONE);
   setModalView(document, modalHeader);
   getSubmitButton(document).onclick = clickHandler.bind(null, document);
   getTodoDescription(document).focus();
   if (showTitle == DISPLAY_BLOCK) {
-    getTodoTitle(document).style.display = DISPLAY_BLOCK;
-    getTodoTitle(document).className = 'input-field field2';
+    setElementDisplayProperty(getTodoTitle(document), DISPLAY_BLOCK);
+    setCssClassToElement(getTodoTitle(document), 'input-field field2');
     getTodoTitle(document).focus();
   }
 };
