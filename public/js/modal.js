@@ -49,13 +49,12 @@ const clearTextFields = document => {
 }
 
 const openModal = function (document, modalHeader, clickHandler, showTitle = DISPLAY_NONE) {
-  setElementDisplayProperty(getTodoListContainer(document), DISPLAY_NONE);
   setModalView(document, modalHeader);
   getSubmitButton(document).onclick = clickHandler.bind(null, document);
   getTodoDescription(document).focus();
   if (showTitle == DISPLAY_BLOCK) {
     setElementDisplayProperty(getTodoTitle(document), DISPLAY_BLOCK);
-    setCssClassToElement(getTodoTitle(document), 'input-field field2');
+    setCssClassToElement(getTodoTitle(document), 'input-field');
     getTodoTitle(document).focus();
   }
 };

@@ -23,9 +23,9 @@
       <div>
         <div class="popup-edit-box">
           <p id="modalHeader"></p>
-          <span style="display: none;" id="spanTodoId"></span>
-          <span style="display: none;" id="spanTaskId"></span>
-          <input style="display: none;" type="text" id="editTitle" placeholder="Title" required />
+          <span class="display-none" id="spanTodoId"></span>
+          <span class="display-none" id="spanTaskId"></span>
+          <input class="display-none" type="text" id="editTitle" placeholder="Title" required />
           <input type="text" class="input-field" id="editDescription" placeholder="Description" required />
           <input type="submit" class="input-field btn btn-submit" id="btnSubmitModal" required />
         </div>
@@ -35,7 +35,7 @@
 
   <header class="todo-header">
     <img class="todo-icon" src="/images/todoicon.jpg" alt="" srcset="">
-    <div onclick="logout()" class="logout">Logout</div>
+    <div id="btnLogout" class="logout">Logout</div>
     <div class="log-in-user-name" id="loggedInUser"></div>
   </header>
 

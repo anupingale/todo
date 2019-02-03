@@ -8,6 +8,8 @@ const getGreetingView = document => document.getElementById('loggedInUser');
 
 const getAddTodoButton = document => document.getElementById('btnAddTodo');
 
+const getLogoutButton = document => document.getElementById('btnLogout');
+
 const getTodoID = view => getNumber(view.parentElement.parentElement.parentElement.id);
 
 const getClickedButtonID = event => event.target.id;
@@ -93,4 +95,6 @@ window.onload = () => {
   loadTodo(document);
   getModalCloseButton(document).onclick = () => hideModal(document);
   getAddTodoButton(document).onclick = operations['Add Todo'];
+  getLogoutButton(document).onclick = logout;
+
 };

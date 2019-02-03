@@ -10,7 +10,7 @@
 
 .todo-item {
   width:75%;
-  height: 35%;
+  height: 80%;
   margin: auto;
   display: flex;
   flex-wrap: wrap;
@@ -78,10 +78,6 @@
   background: green;
 }
 
-.field2 {
-  margin-left: 88px;
-}
-
 .done {
   text-decoration: line-through;
 }
@@ -132,4 +128,8 @@
   float: left;
   margin-left: 5px;
   margin-top: 5px
+}
+
+.display-none {
+  display: none;
 }
