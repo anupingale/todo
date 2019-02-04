@@ -16,8 +16,8 @@ const logoutHandler = function (request, response) {
 }
 
 const renderLoginPage = function (request, response, next) {
-  const cookie = request.cookies.username;
-  if (cookie) {
+  const username = request.cookies.username;
+  if (username) {
     return response.redirect(TODO_PAGE);
   }
   next();

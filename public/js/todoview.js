@@ -41,7 +41,6 @@ const createEditBox = function (document, value) {
   textBox.type = 'text';
   textBox.id = 'newTaskDescription';
   setElementValue(textBox, value);
-  textBox.autofocus = true;
   textBox.onkeydown = editTask;
   return textBox;
 };
@@ -52,6 +51,7 @@ const openTaskEditor = function (document) {
   const taskTextBox = createEditBox(document, taskDetail);
   setElementInnerHTML(taskDescriptionView, EMPTY_STRING);
   appendChildren(taskDescriptionView, [taskTextBox]);
+  taskTextBox.focus();
 };
 
 const getTaskStatusCssClass = function (taskStatus) {
@@ -115,7 +115,6 @@ const createContainer = function (document, todo, todoId) {
   return container;
 };
 
-
 const createTodoView = function (document, todo, todoId) {
   const container = createContainer(document, todo, todoId);
   const tasks = todo.tasks;
@@ -141,16 +140,9 @@ const hideModal = function (document) {
   setElementDisplayProperty(getModal(document), DISPLAY_NONE);
 };
 
-window.onkeydown = () => {
-  if (event.key == 'Escape') {
-    hideModal(document);
-    hideTaskEditor(document);
-  }
-};
-
 const hideTaskEditor = function (document) {
   const taskEditor = getTaskDetailEditBox(document);
-  setElementInnerHTML(taskEditor.parentElement.id, taskEditor.value);
+  setElementInnerHTML(taskEditor.parentElement, taskEditor.value);
 };
 
 const editTask = function () {
@@ -160,5 +152,15 @@ const editTask = function () {
     const todoId = getTodoID(newTaskDescription);
     const taskId = getNumber(newTaskDescription.parentElement.id);
     editTodoTask({ todoId, taskId, description });
+  }
+  
+  if (event.key == 'Escape') {
+    hideTaskEditor(document);
+  }
+};
+
+window.onkeydown = () => {
+  if (event.key == 'Escape') {
+    hideModal(document);
   }
 };

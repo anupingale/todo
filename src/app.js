@@ -1,11 +1,12 @@
+const express = require('express')
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const { renderLoginPage, loginHandler, logoutHandler } = require('./login');
 const { getUsers, getUsersTodo } = require('./util');
 const { signupHandler } = require('./signup');
 const todoHandler = require('./todoHandler');
-const express = require('express')
 const app = express();
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+
 const cachedData = {
   users: getUsers(),
   usersTodo: getUsersTodo()
