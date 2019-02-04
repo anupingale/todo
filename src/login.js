@@ -15,17 +15,8 @@ const logoutHandler = function (request, response) {
   response.redirect(LOGIN_PAGE);
 }
 
-const renderLoginPage = function (request, response, next) {
-  const username = request.cookies.username;
-  if (username) {
-    return response.redirect(TODO_PAGE);
-  }
-  next();
-};
-
 module.exports = {
   loginHandler,
   isValidUser,
-  renderLoginPage,
   logoutHandler
 };

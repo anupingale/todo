@@ -1,20 +1,5 @@
-const { renderLoginPage, isValidUser, loginHandler } = require('../src/login.js');
+const { loginHandler } = require('../src/login.js');
 const { expect } = require('chai');
-
-describe('renderLoginPage', () => {
-  it('should not redirect to todo.html if cookie is not present', () => {
-    let req = { cookies: {}, body: "username=abc&password=abc" }
-    const next = () => {
-      expect(res.statusCode).to.not.equal(302);
-    }
-    let res = {
-      statusCode: undefined,
-      end: () => { },
-      writeHead: function (statusCode, rediectionURL) { }
-    }
-    renderLoginPage(req, res, next);
-  });
-});
 
 describe('loginHandler', () => {
   it.skip('should return valid status code and redirction url', () => {
