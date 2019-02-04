@@ -2,24 +2,10 @@ const TodoList = require('./model/todoList');
 const Todo = require('./model/todo');
 const fs = require('fs');
 const {
-  KEY_SEPERATOR,
-  KEY_VALUE_SEPERATOR,
   USER_TODO,
   USER_DETAIL_FILE,
   ENCODING,
-  PLUS_REGEXP,
-  SPACE
 } = require('./constant');
-
-const parseUserInput = userDetails => {
-  const args = {};
-  const splitKeyValue = pair => pair.split(KEY_VALUE_SEPERATOR);
-  const assignKeyValueToArgs = ([key, value]) => (args[key] = decode(value));
-  userDetails.split(KEY_SEPERATOR).map(splitKeyValue).forEach(assignKeyValueToArgs);
-  return args;
-};
-
-const decode = text => decodeURIComponent(text.replace(PLUS_REGEXP, SPACE));
 
 const isEqual = (value1, value2) => value1 == value2;
 
@@ -70,7 +56,6 @@ const updateUsersTodoData = usersTodo => fs.writeFileSync(USER_TODO, JSON.string
 const updateUsersData = users => fs.writeFileSync(USER_DETAIL_FILE, JSON.stringify(users));
 
 module.exports = {
-  parseUserInput,
   isEqual,
   isListEmpty,
   getUsers,

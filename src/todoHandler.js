@@ -7,7 +7,7 @@ const getCurrentUser = cookies => cookies.username;
 const sendUserTodoList = function (response, cachedData, username) {
   const userTodoList = cachedData.usersTodo[username].todoLists;
   const user = cachedData.users[username].displayName
-  response.json({ userTodoList, user });
+  response.send(JSON.stringify({ userTodoList, user }));
 }
 
 const renderTodoList = function (cachedData, request, response) {
@@ -21,7 +21,7 @@ const renderTodoList = function (cachedData, request, response) {
 
 const addUserTodo = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
-  const { title, description } = JSON.parse(request.body);
+  const { title, description } = request.body;
   const todo = new Todo(title, description);
   cachedData.usersTodo[currentUser].addTodo(todo);
   updateUsersTodoData(cachedData.usersTodo);
@@ -30,7 +30,7 @@ const addUserTodo = function (cachedData, request, response) {
 
 const editUserTodo = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
-  const { title, description, todoId } = JSON.parse(request.body);
+  const { title, description, todoId } = request.body;
   cachedData.usersTodo[currentUser].editTodo(todoId, { title, description });
   updateUsersTodoData(cachedData.usersTodo);
   sendUserTodoList(response, cachedData, currentUser);
@@ -38,7 +38,7 @@ const editUserTodo = function (cachedData, request, response) {
 
 const deleteUserTodo = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
-  const { todoId } = JSON.parse(request.body);
+  const { todoId } = request.body;
   cachedData.usersTodo[currentUser].deleteTodo(todoId);
   updateUsersTodoData(cachedData.usersTodo);
   sendUserTodoList(response, cachedData, currentUser);
@@ -46,7 +46,7 @@ const deleteUserTodo = function (cachedData, request, response) {
 
 const addTodoTask = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
-  const { taskDescription, todoId } = JSON.parse(request.body);
+  const { taskDescription, todoId } = request.body;
   cachedData.usersTodo[currentUser].todoLists[todoId].addTask(taskDescription);
   updateUsersTodoData(cachedData.usersTodo);
   sendUserTodoList(response, cachedData, currentUser);
@@ -54,7 +54,7 @@ const addTodoTask = function (cachedData, request, response) {
 
 const editTodoTask = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
-  const { todoId, taskId, taskDescription } = JSON.parse(request.body);
+  const { todoId, taskId, taskDescription } = request.body;
   cachedData.usersTodo[currentUser].todoLists[todoId].editTask(taskId, taskDescription);
   updateUsersTodoData(cachedData.usersTodo);
   sendUserTodoList(response, cachedData, currentUser);
@@ -62,7 +62,7 @@ const editTodoTask = function (cachedData, request, response) {
 
 const deleteTodoTask = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
-  const { todoId, taskId } = JSON.parse(request.body);
+  const { todoId, taskId } = request.body;
   cachedData.usersTodo[currentUser].todoLists[todoId].deleteTask(taskId);
   updateUsersTodoData(cachedData.usersTodo);
   sendUserTodoList(response, cachedData, currentUser);
@@ -70,7 +70,7 @@ const deleteTodoTask = function (cachedData, request, response) {
 
 const toggleTaskStatus = function (cachedData, request, response) {
   const currentUser = getCurrentUser(request.cookies);
-  const { todoId, taskId } = JSON.parse(request.body);
+  const { todoId, taskId } = request.body;
   cachedData.usersTodo[currentUser].todoLists[todoId].toggleTaskStatus(taskId);
   updateUsersTodoData(cachedData.usersTodo);
   sendUserTodoList(response, cachedData, currentUser);

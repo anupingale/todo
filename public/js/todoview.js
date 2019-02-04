@@ -105,20 +105,10 @@ const createTitleBar = function (document, todoTitle, todoId) {
   return titleBar;
 };
 
-const toggleTaskView = function () {
-  console.log(event.target.parentElement);
-  // console.log(document.getElementById(event.target.id));
-  document.getElementById(event.target.parentElement).style.height = '85%';
-  document.getElementById(event.target.parentElement).getElementsByClassName('item').forEach(ele=>
-    ele.style.display = 'flex'
-    )
-}
-
 const createContainer = function (document, todo, todoId) {
   const container = document.createElement('div');
   setCssClassToElement(container, 'todo-container');
   container.id = 'container_' + todoId;
-  container.onclick = toggleTaskView;
   const titleView = createTitleBar(document, todo.title, todoId);
   const descriptionView = createView(document, todo.description, 'description');
   appendChildren(container, [titleView, descriptionView]);

@@ -1,9 +1,8 @@
-const { parseUserInput } = require('./util');
 const { isValidUser } = require('./signup');
 const { LOGIN_PAGE, TODO_PAGE } = require('./constant');
 
 const loginHandler = function (cachedData, request, response) {
-  const { username, password } = parseUserInput(request.body);
+  const { username, password } = request.body;
   if (isValidUser(cachedData.users, username, password)) {
     response.cookie('username', username);
     return response.redirect(TODO_PAGE);
@@ -25,7 +24,6 @@ const renderLoginPage = function (request, response, next) {
 };
 
 module.exports = {
-  parseUserInput,
   loginHandler,
   isValidUser,
   renderLoginPage,

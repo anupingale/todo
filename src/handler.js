@@ -3,14 +3,14 @@ const {
   KEY_VALUE_SEPERATOR,
 } = require('./constant');
 
-const readData = function(request, response, next) {
-  let content = '';
-  request.on('data', data => (content = content + data));
-  request.on('end', () => {
-    request.body = content;
-    next();
-  });
-};
+// const readData = function(request, response, next) {
+//   let content = '';
+//   request.on('data', data => (content = content + data));
+//   request.on('end', () => {
+//     request.body = content;
+//     next();
+//   });
+// };
 
 const readCookies = function(request, response, next) {
   const cookie = request.headers.cookie;
@@ -25,4 +25,4 @@ const readCookies = function(request, response, next) {
   next();
 };
 
-module.exports = { readData, readCookies };
+module.exports = {  readCookies };

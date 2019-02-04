@@ -1,6 +1,6 @@
 const TodoList = require('./model/todoList');
 const { TODO_PAGE, SIGNUP_PAGE } = require('./constant');
-const { updateUsersData, updateUsersTodoData, parseUserInput } = require('./util');
+const { updateUsersData, updateUsersTodoData } = require('./util');
 
 const isValidUser = (users, username, password) =>
   users[username] && users[username].password === password;
@@ -18,7 +18,7 @@ const addNewUserDetails = function (cachedData, response, userDetails) {
 }
 
 const signupHandler = function (cachedData, request, response) {
-  const userDetails = parseUserInput(request.body);
+  const userDetails = request.body;
   if (isUserExists(cachedData.users, userDetails.username)) {
     return response.redirect(SIGNUP_PAGE);
   }

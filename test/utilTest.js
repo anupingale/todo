@@ -1,13 +1,5 @@
-const { parseUserInput, isEqual } = require('../src/util.js');
+const { isEqual } = require('../src/util.js');
 const { expect } = require('chai');
-
-describe('parseUserInput', () => {
-  it('should parse the userDetail in key value pair', () => {
-    const result = parseUserInput("username=abc&password=xyz")
-    expect(result).has.property("username").to.equal("abc");
-    expect(result).has.property("password").to.equal("xyz");
-  });
-});
 
 describe('isEqual', () => {
   it('should return true if values are equal', () => {

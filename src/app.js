@@ -5,13 +5,14 @@ const { readData, readCookies } = require('./handler');
 const todoHandler = require('./todoHandler');
 const express = require('express')
 const app = express();
-
+const bodyParser = require('body-parser');
 const cachedData = {
   users: getUsers(),
   usersTodo: getUsersTodo()
 }
 
-app.use(readData);
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 app.use(readCookies);
 app.use(express.static('public'));
 

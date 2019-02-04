@@ -15,7 +15,11 @@ const getTodoID = view => getNumber(view.parentElement.parentElement.parentEleme
 const getClickedButtonID = event => event.target.id;
 
 const sendPostRequest = data => {
-  return { method: POST_REQUSET, body: JSON.stringify(data) };
+  return {
+    method: POST_REQUSET,
+    headers: { "Content-Type": "application/json", },
+    body: JSON.stringify(data)
+  };
 };
 
 const getInputDetails = function (document) {
