@@ -1,11 +1,11 @@
 const { renderLoginPage, loginHandler, logoutHandler } = require('./login');
 const { getUsers, getUsersTodo } = require('./util');
 const { signupHandler } = require('./signup');
-const { readData, readCookies } = require('./handler');
 const todoHandler = require('./todoHandler');
 const express = require('express')
 const app = express();
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const cachedData = {
   users: getUsers(),
   usersTodo: getUsersTodo()
@@ -13,9 +13,8 @@ const cachedData = {
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-app.use(readCookies);
 app.use(express.static('public'));
-
+app.use(cookieParser());
 app.get('/pages/login.html', renderLoginPage);
 app.get('/loadTodoList', todoHandler.renderTodoList.bind(null, cachedData));
 app.post('/signup', signupHandler.bind(null, cachedData));
