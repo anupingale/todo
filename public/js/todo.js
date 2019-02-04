@@ -71,14 +71,16 @@ const toggleTaskStatus = function (document, taskId, todoId) {
 
 const loadTodo = function (document) {
   fetch('/loadTodoList')
-    .then(response => response.json())
-    .then(data => {
-      if (Object.keys(data).length) {
-        displayUserName(document, data.user);
-        displayTodo(document, data.userTodoList);
+    .then(response => {
+      if (response.redirected) {
+        window.location.href = LOGIN_PAGE;
         return;
       }
-      window.location.href = LOGIN_PAGE;
+      return response.json()
+    })
+    .then(data => {
+      displayUserName(document, data.user);
+      displayTodo(document, data.userTodoList);
     });
 };
 
@@ -87,8 +89,9 @@ const displayUserName = function (document, username) {
 };
 
 const logout = function () {
-  fetch('/logout');
-  window.location.href = LOGIN_PAGE;
+  fetch('/logout').then(response => {
+    window.location.href = response.url;
+  })
 };
 
 window.onload = () => {
@@ -96,5 +99,4 @@ window.onload = () => {
   getModalCloseButton(document).onclick = () => hideModal(document);
   getAddTodoButton(document).onclick = operations['Add Todo'];
   getLogoutButton(document).onclick = logout;
-
 };

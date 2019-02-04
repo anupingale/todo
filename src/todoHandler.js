@@ -1,20 +1,19 @@
 const Todo = require('./model/todo');
-const { send } = require('./handler');
 const { updateUsersTodoData } = require('./util');
+const { LOGIN_PAGE } = require('./constant');
 
 const getCurrentUser = cookies => cookies.username;
 
 const sendUserTodoList = function (response, cachedData, username) {
   const userTodoList = cachedData.usersTodo[username].todoLists;
   const user = cachedData.users[username].displayName
-  response.write(JSON.stringify({ userTodoList, user }));
-  response.end();
+  response.json({ userTodoList, user });
 }
 
 const renderTodoList = function (cachedData, request, response) {
   const username = getCurrentUser(request.cookies);
   if (!username) {
-    send(response, JSON.stringify({}), 200);
+    response.redirect(LOGIN_PAGE);
     return;
   }
   sendUserTodoList(response, cachedData, username);

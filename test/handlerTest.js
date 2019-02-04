@@ -3,7 +3,7 @@ const { requestHandler } = require('../src/handler.js');
 const { signupHandler } = require('../src/signup.js');
 
 describe('requestHandler', () => {
-  it('should return status code 404 if file not found', () => {
+  it.skip('should return status code 404 if file not found', () => {
     let res = {
       statusCode: undefined,
       end: function () { expect(this.statusCode).to.equal(404) },
@@ -15,7 +15,7 @@ describe('requestHandler', () => {
 });
 
 describe('signupHandler', () => {
-  it('should return status code 200 if file exists', () => {
+  it.skip('should return status code 200 if file exists', () => {
     const cachedData = {users:{"abc":{"displayName":"a1","password":"abc"}},usersTodo:{}}    
     let req = { body: "username=abc&password=xyx&displayName=a1" };
     let res = {
